@@ -1,7 +1,9 @@
 
+import flask as fl
 from flask import Flask
+
 app = Flask(__name__)
 
 @app.route("/")
 def test():
-    return "YEP"
+    return fl.render_template("index.html", name="Andrew")
