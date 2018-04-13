@@ -2,14 +2,18 @@
 import flask as fl
 from flask import Flask
 
-from flask_socketio import SocketIO
-from flask_sqlalchemy import SQLAlchemy
-
 app = Flask(__name__)
 app.config.from_envvar("STRATEGY_CFG")
 
-sio = SocketIO(app)
-db = SQLAlchemy(app)
+from sock import sio
+sio.init_app(app)
+
+from db import db
+db.init_app(app)
+
+from auth import bcrypt, login_manager
+bcrypt.init_app(app)
+login_manager.init_app(app)
 
 @app.route("/")
 def test():
