@@ -1,15 +1,14 @@
 
-body, html {
-    width: 100%;
-    height: 100%;
-}
-
 .jumbotron {
     text-align: center;
 }
 
 .controls > .create-btn {
     margins: auto;
+}
+
+.game-list {
+    height: 100%;
 }
 
 .game-listing {
@@ -22,4 +21,9 @@ body, html {
 
 .game-listing .map-name {
     font-style: italic;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
 }
