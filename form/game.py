@@ -2,8 +2,9 @@
 from flask_wtf import FlaskForm
 
 import wtforms as wtf
-import wtfroms.validators as valid
+import wtforms.validators as valid
 
 class GameCreateForm(FlaskForm):
-    name = wtf.StringField('name', validators=[valid.DataRequired()])
+    name = wtf.StringField('Name', validators=[valid.DataRequired()])
+    map_name = wtf.StringField('Map', validators=[valid.DataRequired()])
 

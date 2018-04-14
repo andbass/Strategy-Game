@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+{% import "bootstrap/wtf.html" as wtf %}
+
 <html>
     <head>
         <title>Strategy Game</title>
@@ -27,7 +29,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Hello dylan!</p>
+                        {{ wtf.quick_form(game_form, action="/game") }}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
