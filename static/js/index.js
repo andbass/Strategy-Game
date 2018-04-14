@@ -3,8 +3,13 @@ function onCreateGame(evt) {
     evt.preventDefault()
 
     var data = $("#create-game-modal form").serialize()
+
+    $(".create-btn").attr("disabled", true)
     $.post("/game", data, function(data) {
         alert(JSON.stringify(data))
+
+        $(".create-btn").removeAttr("disabled")
+        $("#create-game-modal").modal("hide")
     })
 }
 

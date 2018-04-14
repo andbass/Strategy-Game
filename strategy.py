@@ -31,8 +31,8 @@ def index():
 @app.route("/game", methods=["POST"])
 def create_game():
     game_form = form.GameCreateForm()
-    if game_form.validate_on_submit():
-        return "OK"
+    if not game_form.validate_on_submit():
+        print(game_form.errors)
+        return jsonify(errors=game_form.errors)
 
-    print(game_form.errors)
-    return jsonify(errors=game_form.errors)
+    return jsonify(message="ok")
