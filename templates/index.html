@@ -39,14 +39,19 @@
             </div>
         </div>
 
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Strategy</a>
+        </nav>
+
         <div class="jumbotron">
-            <h1>Strategy!</h1>
-            <p>Create or join a game boyo</p>
+            <h1 class="display-4">Game Center</h1>
+            <p class="lead">Hop in a game and get wrecked!</p>
         </div>
 
-        <div class="container-fluid">
+
+        <div class="main-panel container-fluid">
             <div class="row">
-                <div class="col-sm-2">
+                <div class="game-panel col-sm-2">
                     <div class="controls">
                         <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#create-game-modal">Create Game</button>
                         <button class="refresh-btn btn btn-secondary btn-block">Refresh</button>
@@ -82,8 +87,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-10">
+                <div class="canvas-panel col-sm-8">
                     <canvas class="main-canvas">
+                </div>
+                <div class="account-panel col-sm-2">
+                    <h5>Account</h5>
+
+                    {{ wtf.quick_form(login_form, action="/login") }}
+                    <button type="button" class="login-btn btn btn-primary">Login</button>
+                    <button type="button" class="register-btn btn btn-secondary">Register</button>
                 </div>
             </div>
         </div>

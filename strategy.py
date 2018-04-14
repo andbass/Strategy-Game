@@ -26,13 +26,12 @@ def message(msg):
 
 @app.route("/")
 def index():
-    return fl.render_template("index.html", game_form=form.GameCreateForm())
+    return fl.render_template("index.html", game_form=form.GameCreateForm(), login_form=form.LoginForm())
 
 @app.route("/game", methods=["POST"])
 def create_game():
     game_form = form.GameCreateForm()
     if not game_form.validate_on_submit():
-        print(game_form.errors)
         return jsonify(errors=game_form.errors)
 
     return jsonify(message="ok")
