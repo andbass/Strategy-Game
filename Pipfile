@@ -5,10 +5,16 @@ name = "pypi"
 
 [packages]
 flask = "*"
-sqlalchemy = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
 flask-socketio = "*"
+flask-login = "*"
+flask-shell-ipython = "*"
+pymysql = "*"
+flask-bcrypt = "*"
+attrs = "*"
+flask-wtf = "*"
+flask-bootstrap = "*"
 
 [dev-packages]
 
