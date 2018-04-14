@@ -1,6 +1,8 @@
 
 function onCreateGame() {
-
+    $.post("/game", function(data) {
+        alert(data)
+    })
 }
 
 $(document).ready(function() {
@@ -8,4 +10,6 @@ $(document).ready(function() {
     socket.on("connect", function() {
         socket.emit("message", { data: "Dyalnana" })
     })
+
+    $(".create-btn").click(onCreateGame)
 })

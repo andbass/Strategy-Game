@@ -2,6 +2,8 @@
 import flask as fl
 from flask import Flask
 
+import form
+
 app = Flask(__name__)
 app.config.from_envvar("STRATEGY_CFG")
 
@@ -20,9 +22,13 @@ def message(msg):
     print("GOT: {}".format(msg))
 
 @app.route("/")
-def test():
-    return fl.render_template("index.html")
+def index():
+    return fl.render_template("index.html", game_form=form.GameCreateForm())
 
 @app.route("/game", methods=["POST"])
 def create_game():
-    pass
+    game_form = form.GameCreateForm()
+    if game_form.validate_on_submit():
+        return "ALKJADSLK:AS:KLDJASD:JKAS:D"
+
+    return "FAIL"
