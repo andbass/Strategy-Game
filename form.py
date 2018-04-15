@@ -8,8 +8,9 @@ from wtforms.fields.html5 import EmailField
 class LoginForm(FlaskForm):
     email = EmailField('Email', validators=[valid.DataRequired(), valid.Email()])
     password = wtf.PasswordField('Password', validators=[valid.DataRequired()])
+    
+    submit = wtf.SubmitField('Login')
 
 class GameCreateForm(FlaskForm):
     name = wtf.StringField('Name', validators=[valid.DataRequired()])
     map_name = wtf.StringField('Map', validators=[valid.DataRequired()])
-

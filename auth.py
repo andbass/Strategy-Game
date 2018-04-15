@@ -1,6 +1,6 @@
 
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 from db import User
 
