@@ -8,8 +8,9 @@
     padding-top: 1rem;
 }
 
-.controls > .create-btn {
-    margins: auto;
+.game-list {
+    max-height: 40rem;
+    overflow-y: scroll;
 }
 
 .game-listing {
@@ -27,6 +28,10 @@
 
 .account-panel {
     background: #e9ecef;
+}
+
+.register-btn {
+    margin-top: 0.5rem;
 }
 
 canvas {

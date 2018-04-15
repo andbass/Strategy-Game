@@ -42,13 +42,21 @@
 
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Strategy</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+            </div>
+            {% if current_user.is_authenticated %}
+            <form class="form-inline my-2 my-lg-0" action="/logout">
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Logout</button>
+            </form>
+            {% endif %}
         </nav>
 
         <div class="jumbotron">
             <h1 class="display-4">Game Center</h1>
             <p class="lead">Hop in a game and get wrecked!</p>
         </div>
-
 
         <div class="main-panel container-fluid">
             <div class="row">
@@ -86,18 +94,42 @@
                                 <a href="#" class="card-link">Join</a>
                             </div>
                         </div>
+                        <div class="game-listing card">
+                            <div class="card-body">
+                                <h5 class="name card-title">Game 3</h5>
+                                <p class="map-name card-text">battle3</p>
+                            </div>
+                            <ul class="player-list list-group list-group-flush">
+                                <li class="list-group-item">Andrew</li>
+                                <li class="list-group-item">Dylan</li>
+                                <li class="list-group-item">AJA</li>
+                            </ul>
+                            <div class="game-panel card-body">
+                                <a href="#" class="card-link">Join</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="canvas-panel col-sm-8">
+                <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
                     <canvas id="main-canvas" class="main-canvas">
                 </div>
+                {% if not current_user.is_authenticated %}
                 <div class="account-panel col-sm-2">
-                    <h5>Account</h5>
+                    {% if bad_login %}
+                    <div class="alert alert-danger" role="alert">
+                        Invalid Credentials
+                    </div>
+                    {% endif %}
 
-                    {{ wtf.quick_form(login_form, action="/login") }}
-                    <button type="button" class="login-btn btn btn-primary">Login</button>
-                    <button type="button" class="register-btn btn btn-secondary">Register</button>
+                    <h5>Account</h5>
+                    {{
+                        wtf.quick_form(login_form, action="/login", button_map={ 
+                        "submit": "primary btn-block" 
+                        }) 
+                    }}
+                    <button type="button" class="register-btn btn btn-secondary btn-block">Register</button>
                 </div>
+                {% endif %}
             </div>
         </div>
     </body>

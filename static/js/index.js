@@ -1,14 +1,13 @@
 
 function onCreateGame(evt) {
-    evt.preventDefault()
+    var self = this;
 
+    evt.preventDefault()
     var data = $("#create-game-modal form").serialize()
 
-    $(".create-btn").attr("disabled", true)
+    $(self).attr("disabled", true)
     $.post("/game", data, function(data) {
-        alert(JSON.stringify(data))
-
-        $(".create-btn").removeAttr("disabled")
+        $(self).removeAttr("disabled")
         $("#create-game-modal").modal("hide")
     })
 }
@@ -24,4 +23,5 @@ $(document).ready(function() {
     });
 
     $(".create-btn").click(onCreateGame)
+    $(".login-btn").click(onLogin)
 })
