@@ -28,8 +28,9 @@ class testplayer {
         this.canAttack = 1;
         this.color = color;
         this.baseColor = color;
-        this.skills = ["Attack", "Quick Attack", "Poke"];
+        this.skills = [0, 1, 2];
         this.hp = 20;
+        this.maxhp = 20;
         this.str = 10;
         this.def = 5;
         switch (ranged) {
@@ -39,6 +40,7 @@ class testplayer {
                     [ 1, 0, 1],
                     [ 0, 1, 0]];
                 this.def = 10;
+                this.skills[this.skills.length] = 4;
                 break;
             case 1:
                 this.attackRange = [
@@ -89,11 +91,21 @@ class Menu {
     }
 }
 
+class Bar {
+    constructor(posX, posY, current, max) {
+        this.ratio = current/max;
+        this.x = posX + tileWidth/8;
+        this.y = posY + tileWidth/4;
+        this.width = tileWidth * 3/4;
+        this.height = tileHeight/8;
+    }
+}
+
 var canvas = null;
 var ctx = null;
 
-var tileWidth = 20;
-var tileHeight = 20;
+var tileWidth = 32;
+var tileHeight = 32;
 
 var mouseX;
 var mouseY;
@@ -189,8 +201,15 @@ function displayAttackStats() {
     var yPos = menus[menus.length-1].y;
     var p = units[activeUnit];
     var t = units[targetUnit];
-    var player_text = [p.name + ": " + p.skills[attack], "  HP: " + p.hp, "  str: " + p.str, "  def: " + p.def];
-    var target_text = [t.name + ": Counter", "  HP: " + t.hp, "  str: " + t.str, "  def: " + t.def];
+    var action = actionSet[p.skills[attack]];
+    var player_text = [p.name + ": " + action.name, 
+        "  HP: " + p.hp, 
+        "  str: " + p.str, 
+        " damage: " + action.damage(p, t)];
+    var target_text = [t.name + ": Counter", 
+        "  HP: " + t.hp, 
+        "  str: " + t.str, 
+        "  def: " + t.def];
     menus[menus.length] = new Menu(-1, xPos, yPos, player_text);
     menus[menus.length] = new Menu(-1, xPos + menus[menus.length-1].width, yPos, target_text);
     menus[menus.length] = new Menu(2, xPos, yPos + menus[menus.length-1].height, ["Confirm"]);
@@ -206,12 +225,14 @@ function handleConfirm() {
     p.canAttack = 0;
     // p.canMove = 0;   // adding this will prevent out of order actions, but its kinda fun to leave in, (maybe wrap it into a skill)
     activeUnit = -1;
-    var damage = p.str - t.def;
-    if (damage < 1)
-        damage = 1;
+    var action = actionSet[p.skills[attack]];
+    var damage = action.damage(p, t);
     t.hp -= damage;
     if (t.hp <= 0)
         units.splice(targetUnit, 1);
+    if (t.hp > t.maxhp)
+        t.hp = t.maxhp;
+    
     closeMenus();
     drawState();
 }
@@ -260,7 +281,11 @@ function handleAction() {
             p.color = "#00ff00";
         } else {
             if (canReach(p, p.attackRange, tileX, tileY) && p.canAttack) {
-                menus[menus.length] = new Menu(1, mouseX, mouseY, p.skills); 
+                var s = [];
+                for (var i = 0; i < p.skills.length; i++) {
+                    s[s.length] = actionSet[p.skills[i]].name;
+                }
+                menus[menus.length] = new Menu(1, mouseX, mouseY, s); 
             } else {
                 activeUnit = -1;
                 p.color = p.baseColor;
@@ -304,6 +329,7 @@ function drawState() {
         }
     }
     drawUnits();
+    drawBars();
     drawMenus();
 }
 
@@ -326,8 +352,10 @@ function drawMove(unit) {
             if (boardX < 0)
                 continue;
             if (moves[x][y] == 1) {
+                ctx.beginPath();
+                ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/8, 0, 2 * Math.PI);
                 ctx.fillStyle = "#00ff00";
-                ctx.fillRect(boardX*tileWidth + 8, boardY*tileHeight + 8, tileWidth - 16, tileHeight - 16);
+                ctx.fill();
             }
         }
     }
@@ -351,7 +379,7 @@ function drawAttack(unit) {
                 continue;
             if (moves[x][y] == 1) {
                 ctx.beginPath();
-                ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/2, 0, 2 * Math.PI);
+                ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/3, 0, 2 * Math.PI);
                 ctx.strokeStyle = "#ff0000";
                 ctx.lineWidth = 1;
                 ctx.stroke();
@@ -382,6 +410,18 @@ function drawUnits() {
         var p = units[i];
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x*tileWidth + 5, p.y*tileHeight + 5, tileWidth - 10, tileHeight - 10);
+        if (p.canMove && p.canAttack)
+            ctx.strokeStyle = "#0000ff";
+        else if (p.canMove)
+            ctx.strokeStyle = "#00ff00";
+        else if (p.canAttack)
+            ctx.strokeStyle = "#ff0000";
+        if (p.canMove || p.canAttack) {
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.arc((p.x + .5) * tileWidth, (p.y + .5) * tileHeight, tileWidth/2, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
     }
 }
 
@@ -401,6 +441,22 @@ function drawMenus() {
             ctx.fillStyle = "#000000";
             ctx.fillText(o, m.x + m.marginX, m.y + m.marginY * (j + 1));
         }
+    }
+}
+
+function drawBars() {
+    if (ctx == null)
+        return;
+    for (var i = 0; i < units.length; i++) {
+        var p = units[i];
+        var bar = new Bar(p.x * tileWidth, p.y * tileHeight - 10, p.hp, p.maxhp);
+        ctx.fillStyle = "#666666";
+        ctx.fillRect(bar.x, bar.y, bar.width, bar.height);
+        if (bar.ratio > 0.5)
+            ctx.fillStyle = "#00ff00";
+        else
+            ctx.fillStyle = "#ff0000";
+        ctx.fillRect(bar.x, bar.y, bar.width*bar.ratio, bar.height);
     }
 }
 
