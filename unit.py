@@ -15,6 +15,8 @@ class Unit:
     hp = attr.ib(default=attr.Factory(lambda self: self.max_hp, takes_self=True))
     has_acted = attr.ib(default=False)
 
+    pos = attr.ib(default=attr.Factory(lambda: [0, 0]))
+
 class Types(enum.Enum):
     SOLDIER = 0
     ARCHER = 1
