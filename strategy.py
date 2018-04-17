@@ -33,7 +33,12 @@ def create_game():
     if not game_form.validate_on_submit():
         return jsonify(errors=game_form.errors)
 
-    return jsonify(message="ok")
+    name = game_form.name.data
+    map_name = game_form.map_name.data
+    game = Game(name=name,state=1)
+    db.session.add(game)
+    db.session.commit()
+    return jsonify(message=map_name)
 
 @app.route("/register", methods=["POST"])
 def register():
