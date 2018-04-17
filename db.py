@@ -11,11 +11,14 @@ class User(db.Model, UserMixin):
     current_game = db.relationship('Game', back_populates="players")
 
     email = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=True, nullable=False)
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
     name = db.Column(db.String(120), unique=True, nullable=False)
+    map_name = db.Column(db.String(120), unique=True, nullable=False)
 
     players = db.relationship("User", back_populates="current_game")
     state = db.Column(db.PickleType(protocol=3), nullable=False)

@@ -3,7 +3,13 @@ import flask as fl
 from flask import Flask, jsonify
 from flask_bootstrap import Bootstrap
 
+import sqlalchemy.orm.exc as exc
+
 import form
+import pages
+
+from state import State
+
 app = Flask(__name__)
 app.config.from_envvar("STRATEGY_CFG")
 
@@ -25,7 +31,7 @@ def message(msg):
 
 @app.route("/")
 def index():
-    return fl.render_template("index.html", game_form=form.GameCreateForm(), login_form=form.LoginForm())
+    return pages.index()
 
 @app.route("/game", methods=["POST"])
 def create_game():
@@ -35,10 +41,13 @@ def create_game():
 
     name = game_form.name.data
     map_name = game_form.map_name.data
-    game = Game(name=name,state=1)
+
+    game = Game(name=name, map_name=map_name, state=State(tilemap=[]))
+
     db.session.add(game)
     db.session.commit()
-    return jsonify(message=map_name)
+
+    return fl.redirect(fl.url_for("index"))
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -55,10 +64,8 @@ def login():
 
     try:
         user = User.query.filter_by(email=email, password=password).one()
-    except:
-        return fl.render_template("index.html",
-                game_form=form.GameCreateForm(), login_form=login_form,
-                bad_login=True)
+    except exc.NoResultFound:
+        return pages.index(login_form=login_form, bad_login=True)
 
     login_user(user)
     return fl.redirect(fl.url_for("index"))
@@ -69,3 +76,7 @@ def logout():
     logout_user()
     return fl.redirect(fl.url_for("index"))
 
+@app.cli.command()
+def initdb():
+    db.drop_all()
+    db.create_all()

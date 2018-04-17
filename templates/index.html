@@ -32,11 +32,11 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{ wtf.quick_form(game_form, action="/game") }}
+                        {{ wtf.quick_form(game_form, action="/game", id="game-form") }}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="create-btn btn btn-primary">Create</button>
+                        <button type="submit" class="create-btn btn btn-primary" form="game-form">Create</button>
                     </div>
                     {% else %}
                     <div class="modal-header">
@@ -84,48 +84,22 @@
                         <button class="refresh-btn btn btn-secondary btn-block">Refresh</button>
                     </div>
                     <div class="game-list">
+                        {% for game in games %}
                         <div class="game-listing card">
                             <div class="card-body">
-                                <h5 class="name card-title">Game 1</h5>
-                                <p class="map-name card-text">battle1</p>
+                                <h5 class="name card-title">{{ game.name }}</h5>
+                                <p class="map-name card-text">{{ game.map_name }}</p>
                             </div>
                             <ul class="player-list list-group list-group-flush">
-                                <li class="list-group-item">Andrew</li>
-                                <li class="list-group-item">Dylan</li>
-                                <li class="list-group-item">AJA</li>
+                                {% for player in game.players %}
+                                <li class="list-group-item">{{ player.name }}</li>
+                                {% endfor %}
                             </ul>
                             <div class="game-panel card-body">
                                 <a href="#" class="card-link">Join</a>
                             </div>
                         </div>
-                        <div class="game-listing card">
-                            <div class="card-body">
-                                <h5 class="name card-title">Game 2</h5>
-                                <p class="map-name card-text">battle2</p>
-                            </div>
-                            <ul class="player-list list-group list-group-flush">
-                                <li class="list-group-item">Andrew</li>
-                                <li class="list-group-item">Dylan</li>
-                                <li class="list-group-item">AJA</li>
-                            </ul>
-                            <div class="game-panel card-body">
-                                <a href="#" class="card-link">Join</a>
-                            </div>
-                        </div>
-                        <div class="game-listing card">
-                            <div class="card-body">
-                                <h5 class="name card-title">Game 3</h5>
-                                <p class="map-name card-text">battle3</p>
-                            </div>
-                            <ul class="player-list list-group list-group-flush">
-                                <li class="list-group-item">Andrew</li>
-                                <li class="list-group-item">Dylan</li>
-                                <li class="list-group-item">AJA</li>
-                            </ul>
-                            <div class="game-panel card-body">
-                                <a href="#" class="card-link">Join</a>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">

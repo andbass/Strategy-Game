@@ -4,6 +4,10 @@
     margin-bottom: 0;
 }
 
+.main-panel > .row:first-child {
+    min-height: 20rem;
+}
+
 .main-panel > .row > * {
     padding-top: 1rem;
 }
