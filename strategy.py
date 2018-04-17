@@ -4,7 +4,6 @@ from flask import Flask, jsonify
 from flask_bootstrap import Bootstrap
 
 import form
-
 app = Flask(__name__)
 app.config.from_envvar("STRATEGY_CFG")
 
@@ -52,8 +51,8 @@ def login():
     try:
         user = User.query.filter_by(email=email, password=password).one()
     except:
-        return fl.render_template("index.html", 
-                game_form=form.GameCreateForm(), login_form=login_form, 
+        return fl.render_template("index.html",
+                game_form=form.GameCreateForm(), login_form=login_form,
                 bad_login=True)
 
     login_user(user)
