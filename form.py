@@ -12,5 +12,5 @@ class LoginForm(FlaskForm):
     submit = wtf.SubmitField('Login')
 
 class GameCreateForm(FlaskForm):
-    name = wtf.StringField('Name', validators=[valid.DataRequired()])
-    map_name = wtf.StringField('Map', validators=[valid.DataRequired()])
+    name = wtf.TextField('Name', validators=[valid.DataRequired()])
+    map_name = wtf.TextField('Map', validators=[valid.DataRequired()])
