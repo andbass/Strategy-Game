@@ -13,26 +13,50 @@ class testjson {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
         this.playerData = [
-            new testplayer("Bob", 1, 1, 4, "#ff0000", 0),
-            new testplayer("Cob", 5, 4, 5, "#00ffff", 1),
-            new testplayer("Dob", 3, 3, 5, "#0000ff", 2)
+            new testplayer("Bob", 1, 1, 0, 0),
+            new testplayer("Cob", 5, 4, 1, 1),
+            new testplayer("Dob", 3, 3, 2, 2)
         ];
     }
 }
 class testplayer {
-    constructor(name, posX, posY, move, color, ranged) {
+    constructor(name, posX, posY, team, ranged) {
         this.x = posX;
         this.y = posY;
+        this.team = team;
         this.name = name;
         this.canMove = 1;
         this.canAttack = 1;
-        this.color = color;
-        this.baseColor = color;
         this.skills = [0, 1, 2];
         this.hp = 20;
         this.maxhp = 20;
         this.str = 10;
         this.def = 5;
+        var images = [ 
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image()
+        ]
+        images[0].src = "/static/sprites/soldier.png";
+        images[1].src = "/static/sprites/soldier_canMove.png";
+        images[2].src = "/static/sprites/soldier_canAttack.png";
+        images[3].src = "/static/sprites/soldier_canBoth.png";
+        for (var i = 0; i < images.length; i++) {
+            switch (team) {
+                case 0:
+                    images[i] = filterImage(images[i], [255, 0, 0]);
+                    break;
+                case 1:
+                    images[i] = filterImage(images[i], [0, 255, 0]);
+                    break;
+                case 2:
+                    images[i] = filterImage(images[i], [0, 0, 255]);
+                    break;
+            }
+        }
+        this.imageSet = images;
+
         switch (ranged) {
             case 0:
                 this.attackRange = [
@@ -40,7 +64,7 @@ class testplayer {
                     [ 1, 0, 1],
                     [ 0, 1, 0]];
                 this.def = 10;
-                this.skills[this.skills.length] = 4;
+                this.skills[this.skills.length] = 5;
                 break;
             case 1:
                 this.attackRange = [
@@ -66,7 +90,18 @@ class testplayer {
             [ 0, 1, 1, 1, 1, 1, 0],
             [ 0, 0, 1, 1, 1, 0, 0],
             [ 0, 0, 0, 1, 0, 0, 0]];
+
+        this.image = function() {
+            if (this.canMove && this.canAttack)
+                return this.imageSet[3];
+            if (this.canAttack)
+                return this.imageSet[2];
+            if (this.canMove)
+                return this.imageSet[1];
+            return this.imageSet[0];
+        }
     }
+
 }
 
 // all of the above should be grabbed from other files
@@ -119,7 +154,7 @@ var targetUnit = -1;
 var attack = -1;
 
 window.onload = function() {
-
+    loadImages();
     var data = new testjson(); 
 
     units = data.playerData;
@@ -128,6 +163,7 @@ window.onload = function() {
     canvas = document.getElementById('main-canvas');
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
+
     // canvas.addEventListener('mousemove', function(evt) {
     canvas.addEventListener('click', function(evt) {
         getMousePos(evt);
@@ -138,9 +174,9 @@ window.onload = function() {
             handleMenu(menu);
         }
     }, false);
+
     ctx = canvas.getContext("2d");
     requestAnimationFrame(drawState);
-
 }
 
 window.onresize = function(event) {
@@ -159,10 +195,6 @@ function handleMenu(menu) {
     if (index >= m.options.length)
         index = m.options.length - 1;
 
-    console.log("menu index: " + menu + ", menu id: " + m.id + ", option: " + index);
-
-    // TODO something here to grab selected index
-    
     switch(m.id) {
         // next turn menu
         case 0:
@@ -171,7 +203,8 @@ function handleMenu(menu) {
         // action choice menu
         case 1:
             menus.splice(menu+1, menus.length-menu-1);
-            handleAttack(index);
+            attack = index;
+            displayAttackStats();
             break;
         case 2:
             handleConfirm();
@@ -180,19 +213,12 @@ function handleMenu(menu) {
 }
 
 function handleNextTurn() {
-    console.log("next turn");
     for (var i = 0; i < units.length; i++) {
         var p = units[i];
         p.canMove = 1;
         p.canAttack = 1;
     }
     closeMenus();
-}
-
-function handleAttack(index) {
-    var p = units[activeUnit];
-    attack = index;
-    displayAttackStats();
 }
 
 // stat comparison
@@ -205,7 +231,7 @@ function displayAttackStats() {
     var player_text = [p.name + ": " + action.name, 
         "  HP: " + p.hp, 
         "  str: " + p.str, 
-        " damage: " + action.damage(p, t)];
+        action.info(p, t)];
     var target_text = [t.name + ": Counter", 
         "  HP: " + t.hp, 
         "  str: " + t.str, 
@@ -220,12 +246,15 @@ function displayAttackStats() {
 function handleConfirm() {
     var p = units[activeUnit];
     var t = units[targetUnit];
-    console.log("attack selected: " + p.skills[attack]);
     p.color = p.baseColor;
     p.canAttack = 0;
     // p.canMove = 0;   // adding this will prevent out of order actions, but its kinda fun to leave in, (maybe wrap it into a skill)
     activeUnit = -1;
+
     var action = actionSet[p.skills[attack]];
+    if (action.pre != null)
+        action.pre(p, t);
+
     var damage = action.damage(p, t);
     t.hp -= damage;
     if (t.hp <= 0)
@@ -233,6 +262,9 @@ function handleConfirm() {
     if (t.hp > t.maxhp)
         t.hp = t.maxhp;
     
+    if (action.post != null)
+        action.post(p, t);
+
     closeMenus();
     drawState();
 }
@@ -331,6 +363,10 @@ function drawState() {
     drawUnits();
     drawBars();
     drawMenus();
+    
+    // testing
+//    console.log("should draw image");
+//    ctx.drawImage(image, 40, 40);
 }
 
 function drawMove(unit) {
@@ -408,8 +444,12 @@ function drawUnits() {
 
     for (var i = 0; i < units.length; i++) {
         var p = units[i];
+/*
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x*tileWidth + 5, p.y*tileHeight + 5, tileWidth - 10, tileHeight - 10);
+*/
+ 
+        ctx.drawImage(p.image(), p.x * tileWidth, p.y * tileWidth);
         if (p.canMove && p.canAttack)
             ctx.strokeStyle = "#0000ff";
         else if (p.canMove)
@@ -484,4 +524,57 @@ function getMenu() {
 function closeMenus() {
     menus = [];
     drawState();
+}
+
+function loadImages() {
+
+    console.log("got here");
+    var images = [
+        "/static/sprites/soldier.png",
+        "/static/sprites/soldier_canBoth.png",
+        "/static/sprites/soldier_canAttack.png",
+        "/static/sprites/soldier_canMove.png"];
+    console.log("have " + images.length + " images to process");
+    for (var i = 0; i < images.length; i++) {
+        var image = new Image();
+        image.src = images[i];
+        document.documentElement.appendChild(image);
+        // image.src = images[i];
+    }
+
+    
+
+
+}
+
+function filterImage(image, color) {
+    var fakeCanvas = document.createElement('canvas');
+    var ctx = fakeCanvas.getContext('2d');
+    fakeCanvas.width = 32;
+    fakeCanvas.height = 32;
+
+    ctx.drawImage(image,0,0);
+    var imageData = ctx.getImageData(0,0,32,32);
+    var data = imageData.data;
+
+    // filtering the purple RGB = 87, 0, 127 to be source color
+    for (var y = 0; y < 32; y++) {
+        for (var x = 0; x < 32; x++) {
+            var index = (x + 32 * y) * 4;
+            if (data[index+0] == 87 && data[index+1] == 0 && data[index+2] == 127) {        
+                data[index+0] = color[0];
+                data[index+1] = color[1];
+                data[index+2] = color[2];
+                // alpha is optional
+                if (color.length > 3) {
+                    data[index+4] = color[3];
+                }
+            }
+        }
+    }
+    ctx.putImageData(imageData, 0, 0);
+    var trans = new Image();
+    trans.src = fakeCanvas.toDataURL();
+    return trans;
+
 }

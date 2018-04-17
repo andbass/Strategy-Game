@@ -1,7 +1,8 @@
 
 class Action { // lawsuit
-    constructor(name, sub, pre, post, harm) {
+    constructor(name, desc, sub, pre, post, info, harm) {
         this.name = name;
+        this.desc = desc;
         this.pre = pre;
         this.damage = function(actor, target) {
             var tmp = sub(actor, target);
@@ -11,6 +12,18 @@ class Action { // lawsuit
             return Math.floor(tmp);
         };
         this.post = post;
+        this.info = info;
+        if (this.info == null) {
+            this.info = function(actor, target) {
+                var tmp = this.damage(actor, target);
+                if (tmp < 0) {   
+                    tmp *= -1;
+                    return "  Restore: " + tmp;
+                } else if (tmp > 0) {
+                    return "  Damage: " + tmp;
+                }
+            }
+        }
     }
 }
 
@@ -25,22 +38,57 @@ class Action { // lawsuit
     This function should contain things like status ailments or splash damage, or just left null
 */
 var actionSet = [
-    new Action("Attack", function(actor, target) {
+    new Action("Attack", "basic attack",
+        function(actor, target) {
             return actor.str - target.def;
-        }, null, null, true),
-    new Action("Double Strike", function(actor, target) {
+        },
+        null, null, null, true),
+
+    new Action("Double Strike", "deal reduced damage twice",
+        function(actor, target) {
             var damage = Math.floor(actor.str * 3/4 - target.def);
             if (damage < 1)
                 damage = 1;
             return 2 * damage;
-        }, null, null, true),
-    new Action("Power Strike", function(actor, target) {
+        }, 
+        null, null, null, true),
+
+    new Action("Power Strike", "deal extra damage",
+        function(actor, target) {
             return (actor.str * 5/4 - target.def);
-        }, null, null, true),
-    new Action("Poke", function(actor, target) {
+        }, 
+        null, null, null, true),
+
+    new Action("Poke", "deal 1 damage",
+        function(actor, target) {
             return 1;
-        }, null, null, true),
-    new Action("Heal", function(actor, target) {
+        }, 
+        null, null, null, true),
+
+    new Action("Heal", "Heal target", 
+        function(actor, target) {
+            // actor doesn't have a wisdom stat atm
             return -10;
-        }, null, null, false)
-    ]
+        }, 
+        null, null, null, false),
+
+    new Action("Group Heal", "Heal all allies around you, but target slightly more", 
+        function(actor, target) {
+            return -2;
+        }, 
+        null, 
+        function(actor, target) {
+            for (var i = 0; i < units.length; i++) {
+                var u = units[i];
+                if (Math.abs(actor.y - u.y) > 1 || Math.abs(actor.x - u.x) > 1)
+                    continue;
+                u.hp += 5;
+                if (u.hp > u.maxhp)
+                    u.hp = u.maxhp;
+            }
+        },
+        function(actor, target) {
+            return "  Area Heal: " + 5;
+        }, 
+        false)
+    ];
