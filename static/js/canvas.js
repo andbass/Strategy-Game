@@ -2,29 +2,30 @@ class testjson {
     constructor(mapData, playerData) {
         this.mapData = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0], 
-            [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0], 
-            [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0], 
-            [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0], 
+            [0, 1, 1, 1, 0, 0, 1, 1, 2, 0, 0, 0, 1, 0, 0], 
+            [0, 1, 1, 1, 0, 0, 0, 2, 0, 0, 0, 1, 2, 2, 0], 
+            [0, 0, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 0],
+            [0, 0, 0, 2, 2, 1, 1, 2, 1, 0, 0, 1, 0, 0, 0], 
+            [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 1, 0, 0, 0],
+            [0, 1, 0, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 0, 0], 
+            [0, 1, 2, 2, 2, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0],
+            [0, 1, 0, 2, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0], 
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
         this.playerData = [
-            new testplayer("Bob", 1, 1, 0, 0),
-            new testplayer("Cob", 5, 4, 1, 1),
-            new testplayer("Dob", 3, 3, 2, 2)
+            new testplayer("Bob", 3, 3, 0, 4, 0),
+            new testplayer("Cob", 6, 5, 1, 5, 1),
+            new testplayer("Dob", 10, 6, 2, 6, 2)
         ];
     }
 }
 class testplayer {
-    constructor(name, posX, posY, team, ranged) {
+    constructor(name, posX, posY, team, move, ranged) {
         this.x = posX;
         this.y = posY;
         this.team = team;
         this.name = name;
+        this.move = move;
         this.canMove = 1;
         this.canAttack = 1;
         this.skills = [0, 1, 2];
@@ -82,14 +83,52 @@ class testplayer {
                     [0, 0, 1, 0, 0]];
                 break;
         }
-        this.moveRange = [
-            [ 0, 0, 0, 1, 0, 0, 0],
-            [ 0, 0, 1, 1, 1, 0, 0],
-            [ 0, 1, 1, 1, 1, 1, 0],
-            [ 1, 1, 1, 1, 1, 1, 1],
-            [ 0, 1, 1, 1, 1, 1, 0],
-            [ 0, 0, 1, 1, 1, 0, 0],
-            [ 0, 0, 0, 1, 0, 0, 0]];
+        this.moveRange = function(self) {
+            console.log("here");
+            var center = this.move;
+            var size = this.move * 2 + 1;
+            var grid = new Array(size);
+            for (var y = 0; y < size; y++) {
+                grid[y] = new Array(size);
+            }
+
+            var recurse = function(i, x, y, grid, unitX, unitY) {
+                if (grid[y][x] >= i)
+                    return;
+                if (unitX + x < 0 || unitY + y < 0) {
+                    grid[y][x] == 0;
+                    return;
+                }
+                if (map[unitY + y][unitX + x] == 0) {
+                    grid[y][x] = 0;
+                    return;
+                }
+                grid[y][x] = i;
+                if (map[unitY + y][unitX + x] == 2) {
+                    grid[y][x]--;
+                    i--;   
+                }
+                i--;
+                if (i > 0) {
+                    recurse(i, x-1, y, grid, unitX, unitY);
+                    recurse(i, x+1, y, grid, unitX, unitY);
+                    recurse(i, x, y-1, grid, unitX, unitY);
+                    recurse(i, x, y+1, grid, unitX, unitY);
+                }
+            };
+
+            recurse(move, center, center, grid, this.x - center, this.y - center);
+
+            for (var x = 0; x < size; x++) {
+                for (var y = 0; y < size; y++) {
+                    if (grid[x][y] > 0)
+                        grid[x][y] = 1;
+                }
+            }
+
+
+            return grid;
+        }
 
         this.image = function() {
             if (this.canMove && this.canAttack)
@@ -100,8 +139,7 @@ class testplayer {
                 return this.imageSet[1];
             return this.imageSet[0];
         }
-    }
-
+    } 
 }
 
 // all of the above should be grabbed from other files
@@ -154,7 +192,7 @@ var targetUnit = -1;
 var attack = -1;
 
 window.onload = function() {
-    loadImages();
+    // loadImages();
     var data = new testjson(); 
 
     units = data.playerData;
@@ -295,7 +333,7 @@ function handleAction() {
             else 
                 closeMenus();
         } else {
-            if (canReach(p, p.moveRange, tileX, tileY) && p.canMove) {
+            if (canReach(p, p.moveRange(), tileX, tileY) && p.canMove) {
                 p.x = tileX;
                 p.y = tileY;
                 p.canMove = 0;
@@ -353,7 +391,7 @@ function drawState() {
                     ctx.fillStyle = "#ccffcc";
                     break;
                 case 2:
-                    ctx.fillStyle = "#ff00ff";
+                    ctx.fillStyle = "#33dd88";
                     break;
             }
             ctx.fillRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
@@ -375,7 +413,7 @@ function drawMove(unit) {
         return;
     }
 
-    var moves = unit.moveRange;
+    var moves = unit.moveRange();
     var size = moves.length;
     var center = size/2 - 1;
 
@@ -387,7 +425,7 @@ function drawMove(unit) {
             var boardX = Math.floor(unit.x - center + x);
             if (boardX < 0)
                 continue;
-            if (moves[x][y] == 1) {
+            if (moves[y][x] == 1) {
                 ctx.beginPath();
                 ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/8, 0, 2 * Math.PI);
                 ctx.fillStyle = "#00ff00";
@@ -432,7 +470,7 @@ function canReach(unit, range, xPos, yPos) {
         return false;
     var x = xPos + size - unit.x;
     var y = yPos + size - unit.y;
-    if (range[x][y] == 1)
+    if (range[y][x] == 1)
         return true;
     return false;
 }
@@ -541,10 +579,6 @@ function loadImages() {
         document.documentElement.appendChild(image);
         // image.src = images[i];
     }
-
-    
-
-
 }
 
 function filterImage(image, color) {
