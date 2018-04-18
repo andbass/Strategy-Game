@@ -116,10 +116,10 @@
                     <h5>Account</h5>
                     {{
                         wtf.quick_form(login_form, action="/login", button_map={ 
-                        "submit": "primary btn-block" 
+                        "submit": "primary btn-block", "register": "secondary btn-block"
                         }) 
                     }}
-                    <button type="button" class="register-btn btn btn-secondary btn-block">Register</button>
+                    <!--<button type="button" class="register-btn btn btn-secondary btn-block">Register</button>-->
                 </div>
                 {% endif %}
             </div>

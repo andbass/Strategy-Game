@@ -57,15 +57,25 @@ def register():
 def login():
     login_form = form.LoginForm()
     if not login_form.validate_on_submit():
-        return jsonify(errors=login_form.errors)
+      	return jsonify(errors=login_form.errors)
 
     email = login_form.email.data
     password = login_form.password.data
+    name = email + password
+
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+    	user = User(email=email, name=name, password=password)
+    	db.session.add(user)
+    	db.session.commit()
+    	login_user(user)
+    	return fl.redirect(fl.url_for("index"))
 
     try:
         user = User.query.filter_by(email=email, password=password).one()
     except exc.NoResultFound:
         return pages.index(login_form=login_form, bad_login=True)
+
 
     login_user(user)
     return fl.redirect(fl.url_for("index"))
