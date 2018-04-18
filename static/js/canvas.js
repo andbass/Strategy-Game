@@ -1,16 +1,16 @@
 class testjson {
     constructor(mapData, playerData) {
         this.mapData = [
-            [2, 2, 2, 1, 3, 2, 3, 3, 3, 0, 0, 1, 2, 2, 2],
-            [2, 1, 3, 1, 1, 0, 3, 3, 2, 2, 1, 1, 1, 0, 2], 
-            [3, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0, 1, 2, 2, 2], 
-            [3, 3, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 2, 2],
-            [3, 3, 1, 1, 1, 1, 1, 2, 1, 0, 0, 1, 0, 2, 1], 
-            [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 2, 1, 0, 2, 1],
-            [3, 3, 0, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 0, 1], 
-            [3, 1, 2, 2, 2, 0, 1, 0, 3, 0, 0, 1, 1, 1, 3],
-            [1, 2, 0, 2, 2, 0, 1, 2, 2, 0, 1, 1, 0, 3, 3], 
-            [1, 2, 2, 2, 0, 2, 1, 2, 2, 2, 1, 0, 0, 3, 3]];
+            [2, 2, 2, 1, 3, 2, 3, 3, 5, 0, 0, 1, 0, 0, 2],
+            [2, 0, 3, 0, 5, 5, 0, 3, 5, 2, 1, 1, 1, 0, 2], 
+            [3, 0, 0, 1, 5, 5, 0, 5, 5, 0, 0, 1, 2, 0, 2], 
+            [3, 0, 0, 1, 5, 5, 0, 5, 5, 1, 1, 1, 1, 2, 2],
+            [3, 0, 0, 1, 5, 5, 5, 5, 5, 0, 0, 1, 0, 2, 1], 
+            [3, 0, 0, 0, 0, 1, 0, 0, 1, 2, 2, 0, 0, 2, 1],
+            [3, 0, 0, 2, 1, 2, 0, 1, 1, 2, 2, 0, 1, 0, 1], 
+            [3, 0, 2, 2, 2, 0, 1, 0, 3, 0, 0, 1, 1, 1, 3],
+            [1, 0, 0, 2, 2, 0, 1, 0, 0, 0, 1, 1, 0, 3, 3], 
+            [1, 3, 2, 2, 0, 2, 1, 2, 1, 2, 1, 0, 0, 3, 3]];
 
         this.playerData = [
             new testplayer("Bob", 3, 3, 0, 6),
@@ -131,7 +131,7 @@ class testplayer {
                     grid[y][x] = 0;
                     return;
                 }
-                if (map[unitY + y][unitX + x] == 0) {
+                if (map[unitY + y][unitX + x] == 5) {
                     grid[y][x] = 0;
                     return;
                 }
@@ -429,20 +429,28 @@ function drawState() {
         for (var x = 0; x < map[y].length; x++) {
             switch(map[y][x]) {
                 // replace case statements with tile data based on Type enum
-                case 0:
-                    ctx.fillStyle = "#000000";
+                case 0: // Grass
+                    ctx.fillStyle = "#00df11";
                     break;
-                case 1:
-                    ctx.fillStyle = "#ccffcc";
+                case 1: // Dirt
+                    ctx.fillStyle = "#513500";
                     break;
-                case 2:
-                    ctx.fillStyle = "#006500";
+                case 2: // Forest
+                    ctx.fillStyle = "#105000";
                     break;
-                case 3:
-                    ctx.fillStyle = "#cccc00";
+                case 3: // Mountain
+                    ctx.fillStyle = "#ffae00";
+                    break
+                case 5: // Water
+                    ctx.fillStyle = "rgb(35, 163, 252)";
+                    break;
+
             }
             ctx.fillRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
 
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 1; 
+            ctx.strokeRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
         }
     }
     drawUnits();
@@ -475,8 +483,13 @@ function drawMove(unit) {
             if (moves[y][x] == 1) {
                 ctx.beginPath();
                 ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/8, 0, 2 * Math.PI);
-                ctx.fillStyle = "#00ff00";
+                ctx.fillStyle = "#22f"
                 ctx.fill();
+
+
+                ctx.strokeStyle = "#000";
+                ctx.lineWidth = 1;
+                ctx.stroke();
             }
         }
     }
@@ -582,6 +595,10 @@ function drawBars() {
         else
             ctx.fillStyle = "#ff0000";
         ctx.fillRect(bar.x, bar.y, bar.width*bar.ratio, bar.height);
+
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 1;        
+        ctx.strokeRect(bar.x, bar.y, bar.width*bar.ratio, bar.height);
     }
 }
 
