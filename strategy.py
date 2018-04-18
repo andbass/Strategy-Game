@@ -25,10 +25,6 @@ from auth import bcrypt, login_manager, login_user, login_required, logout_user
 bcrypt.init_app(app)
 login_manager.init_app(app)
 
-@sio.on("message")
-def message(msg):
-    print("GOT: {}".format(msg))
-
 @app.route("/")
 def index():
     return pages.index()
@@ -42,7 +38,7 @@ def create_game():
     name = game_form.name.data
     map_name = game_form.map_name.data
 
-    game = Game(name=name, map_name=map_name, state=State(tilemap=[]))
+    game = Game(name=name, map_name=map_name, state=State.sample())
 
     db.session.add(game)
     db.session.commit()
