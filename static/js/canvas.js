@@ -430,7 +430,7 @@ function drawState() {
             switch(map[y][x]) {
                 // replace case statements with tile data based on Type enum
                 case 0: // Grass
-                    ctx.fillStyle = "#00df11";
+                    ctx.fillStyle = "rgb(130, 240, 0)";
                     break;
                 case 1: // Dirt
                     ctx.fillStyle = "#513500";
