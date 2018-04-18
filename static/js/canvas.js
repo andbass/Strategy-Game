@@ -1,30 +1,33 @@
 class testjson {
     constructor(mapData, playerData) {
         this.mapData = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0], 
-            [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0], 
-            [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0], 
-            [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0], 
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+            [2, 2, 2, 1, 3, 2, 3, 3, 3, 0, 0, 1, 2, 2, 2],
+            [2, 1, 3, 1, 1, 0, 3, 3, 2, 2, 1, 1, 1, 0, 2], 
+            [3, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0, 1, 2, 2, 2], 
+            [3, 3, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 2, 2],
+            [3, 3, 1, 1, 1, 1, 1, 2, 1, 0, 0, 1, 0, 2, 1], 
+            [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 2, 1, 0, 2, 1],
+            [3, 3, 0, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 0, 1], 
+            [3, 1, 2, 2, 2, 0, 1, 0, 3, 0, 0, 1, 1, 1, 3],
+            [1, 2, 0, 2, 2, 0, 1, 2, 2, 0, 1, 1, 0, 3, 3], 
+            [1, 2, 2, 2, 0, 2, 1, 2, 2, 2, 1, 0, 0, 3, 3]];
 
         this.playerData = [
-            new testplayer("Bob", 1, 1, 0, 0),
-            new testplayer("Cob", 5, 4, 1, 1),
-            new testplayer("Dob", 3, 3, 2, 2)
+            new testplayer("Bob", 3, 3, 0, 6),
+            new testplayer("Cob", 6, 5, 1, 6),
+            new testplayer("Dob", 10, 6, 2, 6),
+            new testplayer("Fob", 11, 4, 3, 5),
+            new testplayer("Gob", 11, 8, 4, 5)
         ];
     }
 }
 class testplayer {
-    constructor(name, posX, posY, team, ranged) {
+    constructor(name, posX, posY, team, move) {
         this.x = posX;
         this.y = posY;
         this.team = team;
         this.name = name;
+        this.move = move;
         this.canMove = 1;
         this.canAttack = 1;
         this.skills = [0, 1, 2];
@@ -42,6 +45,25 @@ class testplayer {
         images[1].src = "/static/sprites/soldier_canMove.png";
         images[2].src = "/static/sprites/soldier_canAttack.png";
         images[3].src = "/static/sprites/soldier_canBoth.png";
+        switch (team) {
+            case 0:
+                this.skills[this.skills.length] = 4;
+                this.skills[this.skills.length] = 8;
+                break;
+            case 1:
+                this.skills[this.skills.length] = 3;
+                this.skills[this.skills.length] = 5;
+                break;
+            case 2:
+                this.skills[this.skills.length] = 6;
+                break;
+            case 3:
+                this.skills[this.skills.length] = 7;
+                break;
+            case 4:
+                this.skills[this.skills.length] = 4;
+                break;
+        }
         for (var i = 0; i < images.length; i++) {
             switch (team) {
                 case 0:
@@ -53,43 +75,92 @@ class testplayer {
                 case 2:
                     images[i] = filterImage(images[i], [0, 0, 255]);
                     break;
+                case 3:
+                    images[i] = filterImage(images[i], [128, 128, 128]);
+                    break;
+                case 4:
+                    images[i] = filterImage(images[i], [200, 200, 200]);
             }
         }
         this.imageSet = images;
 
-        switch (ranged) {
-            case 0:
-                this.attackRange = [
-                    [ 0, 1, 0],
-                    [ 1, 0, 1],
-                    [ 0, 1, 0]];
-                this.def = 10;
-                this.skills[this.skills.length] = 5;
-                break;
-            case 1:
-                this.attackRange = [
-                    [1, 1, 1],
-                    [1, 0, 1],
-                    [1, 1, 1]];
-                this.str = 15;
-                break;
-            case 2:
-                this.attackRange = [
-                    [0, 0, 1, 0, 0],
-                    [0, 1, 0, 1, 0],
-                    [1, 0, 0, 0, 1],
-                    [0, 1, 0, 1, 0],
-                    [0, 0, 1, 0, 0]];
-                break;
+        this.attackRange = function(self) {
+            var range = [[0]];
+            for (var i = 0; i < this.skills.length; i++) {
+                var skill = actionSet[this.skills[i]].range(this);
+                var diff = skill.length - range.length;
+                var adjust = Math.floor(Math.abs(diff/2));
+                if (diff > 0) {
+                    for (var y = 0; y < range.length; y++) {
+                        for (var x = 0; x < range.length; x++) {
+                            if (range[x][y] == 1)
+                                skill[x+adjust][y+adjust] = 1;
+                        }
+                    }
+                    range = skill;
+                } else {
+                    for (var y = 0; y < skill.length; y++) {
+                        for (var x = 0; x < skill.length; x++) {
+                            if (skill[y][x] == 1)
+                                range[x+adjust][y+adjust] = 1;
+                        }
+                    }
+                }
+            }
+            return range;
         }
-        this.moveRange = [
-            [ 0, 0, 0, 1, 0, 0, 0],
-            [ 0, 0, 1, 1, 1, 0, 0],
-            [ 0, 1, 1, 1, 1, 1, 0],
-            [ 1, 1, 1, 1, 1, 1, 1],
-            [ 0, 1, 1, 1, 1, 1, 0],
-            [ 0, 0, 1, 1, 1, 0, 0],
-            [ 0, 0, 0, 1, 0, 0, 0]];
+
+
+        this.moveRange = function(self) {
+            console.log("here");
+            var center = this.move;
+            var size = this.move * 2 + 1;
+            var grid = new Array(size);
+            for (var y = 0; y < size; y++) {
+                grid[y] = new Array(size);
+            }
+
+            var recurse = function(i, x, y, grid, unitX, unitY) {
+                if (grid[y][x] >= i)
+                    return;
+                if (unitX + x < 0 || unitY + y < 0) {
+                    grid[y][x] = 0;
+                    return;
+                }
+                if (unitX + x > map[0].length || unitY + y >= map.length) {
+                    grid[y][x] = 0;
+                    return;
+                }
+                if (map[unitY + y][unitX + x] == 0) {
+                    grid[y][x] = 0;
+                    return;
+                }
+                grid[y][x] = i;
+                if (map[unitY + y][unitX + x] == 2 || map[unitY + y][unitX + x] ==3) {
+                    grid[y][x]--;
+                    i--;   
+                }
+                i--;
+                if (i > 0) {
+                    recurse(i, x-1, y, grid, unitX, unitY);
+                    recurse(i, x+1, y, grid, unitX, unitY);
+                    recurse(i, x, y-1, grid, unitX, unitY);
+                    recurse(i, x, y+1, grid, unitX, unitY);
+                }
+            };
+
+            recurse(move, center, center, grid, this.x - center, this.y - center);
+
+            for (var x = 0; x < size; x++) {
+                for (var y = 0; y < size; y++) {
+                    if (grid[x][y] > 0)
+                        grid[x][y] = 1;
+                }
+            }
+
+
+            return grid;
+        }
 
         this.image = function() {
             if (this.canMove && this.canAttack)
@@ -100,8 +171,7 @@ class testplayer {
                 return this.imageSet[1];
             return this.imageSet[0];
         }
-    }
-
+    } 
 }
 
 // all of the above should be grabbed from other files
@@ -154,7 +224,7 @@ var targetUnit = -1;
 var attack = -1;
 
 window.onload = function() {
-    loadImages();
+    // loadImages();
     var data = new testjson(); 
 
     units = data.playerData;
@@ -228,17 +298,26 @@ function displayAttackStats() {
     var p = units[activeUnit];
     var t = units[targetUnit];
     var action = actionSet[p.skills[attack]];
-    var player_text = [p.name + ": " + action.name, 
-        "  HP: " + p.hp, 
-        "  str: " + p.str, 
-        action.info(p, t)];
+    var player_text;
+    var inRange = canReach(p, action.range(p), t.x, t.y);
+    if (inRange) {
+        player_text = [p.name + ": " + action.name, 
+            "  HP: " + p.hp, 
+            "  str: " + p.str, 
+            action.info(p, t)];
+    } else {
+        player_text = [p.name + ": " + action.name,
+            "  not in range"
+            ];
+    }
     var target_text = [t.name + ": Counter", 
         "  HP: " + t.hp, 
         "  str: " + t.str, 
         "  def: " + t.def];
     menus[menus.length] = new Menu(-1, xPos, yPos, player_text);
     menus[menus.length] = new Menu(-1, xPos + menus[menus.length-1].width, yPos, target_text);
-    menus[menus.length] = new Menu(2, xPos, yPos + menus[menus.length-1].height, ["Confirm"]);
+    if (inRange)
+        menus[menus.length] = new Menu(2, xPos, yPos + menus[menus.length-1].height, ["Confirm"]);
     drawState();    
 }
 
@@ -295,7 +374,7 @@ function handleAction() {
             else 
                 closeMenus();
         } else {
-            if (canReach(p, p.moveRange, tileX, tileY) && p.canMove) {
+            if (canReach(p, p.moveRange(), tileX, tileY) && p.canMove) {
                 p.x = tileX;
                 p.y = tileY;
                 p.canMove = 0;
@@ -312,10 +391,14 @@ function handleAction() {
             p = units[activeUnit];
             p.color = "#00ff00";
         } else {
-            if (canReach(p, p.attackRange, tileX, tileY) && p.canAttack) {
+            if (canReach(p, p.attackRange(), tileX, tileY) && p.canAttack) {
                 var s = [];
                 for (var i = 0; i < p.skills.length; i++) {
                     s[s.length] = actionSet[p.skills[i]].name;
+                    var range = actionSet[p.skills[i]].range(p);
+                    if (!canReach(p, range, tileX, tileY)) {
+                            s[s.length-1] += " X"; 
+                    }
                 }
                 menus[menus.length] = new Menu(1, mouseX, mouseY, s); 
             } else {
@@ -353,8 +436,10 @@ function drawState() {
                     ctx.fillStyle = "#ccffcc";
                     break;
                 case 2:
-                    ctx.fillStyle = "#ff00ff";
+                    ctx.fillStyle = "#006500";
                     break;
+                case 3:
+                    ctx.fillStyle = "#cccc00";
             }
             ctx.fillRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
 
@@ -375,7 +460,7 @@ function drawMove(unit) {
         return;
     }
 
-    var moves = unit.moveRange;
+    var moves = unit.moveRange();
     var size = moves.length;
     var center = size/2 - 1;
 
@@ -387,7 +472,7 @@ function drawMove(unit) {
             var boardX = Math.floor(unit.x - center + x);
             if (boardX < 0)
                 continue;
-            if (moves[x][y] == 1) {
+            if (moves[y][x] == 1) {
                 ctx.beginPath();
                 ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/8, 0, 2 * Math.PI);
                 ctx.fillStyle = "#00ff00";
@@ -401,7 +486,7 @@ function drawAttack(unit) {
     if (ctx == null)
         return;
 
-    var moves = unit.attackRange;
+    var moves = unit.attackRange();
     var size = moves.length;
     var center = Math.floor(size/2);
 
@@ -413,7 +498,7 @@ function drawAttack(unit) {
             var boardX = unit.x - center + x;
             if (boardX < 0)
                 continue;
-            if (moves[x][y] == 1) {
+            if (moves[y][x] == 1) {
                 ctx.beginPath();
                 ctx.arc((boardX + .5) * tileWidth, (boardY + .5) * tileHeight, tileWidth/3, 0, 2 * Math.PI);
                 ctx.strokeStyle = "#ff0000";
@@ -432,7 +517,7 @@ function canReach(unit, range, xPos, yPos) {
         return false;
     var x = xPos + size - unit.x;
     var y = yPos + size - unit.y;
-    if (range[x][y] == 1)
+    if (range[y][x] == 1)
         return true;
     return false;
 }
@@ -541,10 +626,6 @@ function loadImages() {
         document.documentElement.appendChild(image);
         // image.src = images[i];
     }
-
-    
-
-
 }
 
 function filterImage(image, color) {

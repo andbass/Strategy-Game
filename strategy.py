@@ -47,13 +47,30 @@ def create_game():
 
 @app.route("/register", methods=["POST"])
 def register():
-    pass
+    register_form = form.RegisterForm()
+    if not register_form.validate_on_submit():
+    		return jsnoify(errors=register_form.errors)
+
+    name = register_form.name.data
+    email = register_form.email.data
+    password = register_form.password.data
+
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+    	user = User(email=email, name=name, password=password)
+    	db.session.add(user)
+    	db.session.commit()
+    	login_user(user)
+    	return fl.redirect(fl.url_for("index"))
+
+    return pages.index(bad_login=True)
+
 
 @app.route("/login", methods=["POST"])
 def login():
     login_form = form.LoginForm()
     if not login_form.validate_on_submit():
-        return jsonify(errors=login_form.errors)
+      	return jsonify(errors=login_form.errors)
 
     email = login_form.email.data
     password = login_form.password.data
