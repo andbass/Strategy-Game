@@ -51,17 +51,13 @@ def create_game():
 
 @app.route("/register", methods=["POST"])
 def register():
-    pass
+    register_form = form.RegisterForm()
+    if not register_form.validate_on_submit():
+    		return jsnoify(errors=register_form.errors)
 
-@app.route("/login", methods=["POST"])
-def login():
-    login_form = form.LoginForm()
-    if not login_form.validate_on_submit():
-      	return jsonify(errors=login_form.errors)
-
-    email = login_form.email.data
-    password = login_form.password.data
-    name = email + password
+    name = register_form.name.data
+    email = register_form.email.data
+    password = register_form.password.data
 
     user = User.query.filter_by(email=email).first()
     if user is None:
@@ -71,11 +67,22 @@ def login():
     	login_user(user)
     	return fl.redirect(fl.url_for("index"))
 
+    return pages.index(bad_login=True)
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    login_form = form.LoginForm()
+    if not login_form.validate_on_submit():
+      	return jsonify(errors=login_form.errors)
+
+    email = login_form.email.data
+    password = login_form.password.data
+
     try:
         user = User.query.filter_by(email=email, password=password).one()
     except exc.NoResultFound:
         return pages.index(login_form=login_form, bad_login=True)
-
 
     login_user(user)
     return fl.redirect(fl.url_for("index"))
