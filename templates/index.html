@@ -19,61 +19,40 @@
         <script src="/static/js/index.js"></script>
         <script src="/static/js/action.js"></script>
         <script src="/static/js/canvas.js"></script>
-        </head>
+    </head>
     <body>
-        <div class="modal fade" id="register-modal" role="dialog" aria-labelledby="create-game-title" aria-hidden=true>
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="create-game-title">Register</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                    {{ 
-                        wtf.quick_form(register_form, action="/register", button_map={ 
-                        "submit": "primary btn-block"
-                        })
-                    }}
-                    <button type="button" class="register-btn btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="modal fade" id="create-game-modal" role="dialog" aria-labelledby="create-game-title" aria-hidden=true>
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     {% if current_user.is_authenticated %}
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="create-game-title">Create Game</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {{ wtf.quick_form(game_form, action="/game", id="game-form") }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="create-btn btn btn-primary" form="game-form">Create</button>
-                    </div>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="create-game-title">Create Game</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ wtf.quick_form(game_form, action="/game", id="game-form") }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="create-btn btn btn-primary" form="game-form">Create</button>
+                        </div>
                     {% else %}
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="create-game-title-login">Login</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                    {{ 
-                        wtf.quick_form(login_form, action="/login", button_map={ 
-                        "submit": "primary btn-block" 
-                        })  
-                    }}
-                    <button type="button" class="register-btn btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
-                    </div>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="create-game-title-login">Login</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ 
+                            wtf.quick_form(login_form, action="/login", button_map={ 
+                            "submit": "primary btn-block" 
+                            })  
+                            }}
+                            <button type="button" class="register-btn btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -86,9 +65,9 @@
                 </ul>
             </div>
             {% if current_user.is_authenticated %}
-            <form class="form-inline my-2 my-lg-0" action="/logout">
-                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Logout</button>
-            </form>
+                <form class="form-inline my-2 my-lg-0" action="/logout">
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Logout</button>
+                </form>
             {% endif %}
         </nav>
 
@@ -106,43 +85,39 @@
                     </div>
                     <div class="game-list">
                         {% for game in games %}
-                        <div class="game-listing card">
-                            <div class="card-body">
-                                <h5 class="name card-title">{{ game.name }}</h5>
-                                <p class="map-name card-text">{{ game.map_name }}</p>
+                            <div class="game-listing card" data-id="{{ game.id }}">
+                                <div class="card-body">
+                                    <h5 class="name card-title">{{ game.name }}</h5>
+                                    <p class="map-name card-text">{{ game.map_name }}</p>
+                                </div>
+                                <ul class="player-list list-group list-group-flush">
+                                    {% for player in game.players %}
+                                        <li class="list-group-item">{{ player.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="game-panel card-body">
+                                    <a href="#" class="card-link">Join</a>
+                                </div>
                             </div>
-                            <ul class="player-list list-group list-group-flush">
-                                {% for player in game.players %}
-                                <li class="list-group-item">{{ player.name }}</li>
-                                {% endfor %}
-                            </ul>
-                            <div class="game-panel card-body">
-                                <a href="#" class="card-link">Join</a>
-                            </div>
-                        </div>
                         {% endfor %}
                     </div>
                 </div>
-                <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
-                    <canvas id="main-canvas" class="main-canvas">
-                </div>
-                {% if not current_user.is_authenticated %}
-                 <div class="account-panel col-sm-2">
+            <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
+                <canvas id="main-canvas" class="main-canvas">
+            </div>
+            {% if not current_user.is_authenticated %}
+                <div class="account-panel col-sm-2">
                     {% if bad_login %}
-                    <div class="alert alert-danger" role="alert">
-                        Invalid Credentials
-                    </div>
+                        <div class="alert alert-danger" role="alert">
+                            Invalid Credentials
+                        </div>
                     {% endif %}
 
                     <h5>Account</h5>
-                    {{
-                        wtf.quick_form(login_form, action="/login", button_map={ 
-                        "submit": "primary btn-block"
-                        }) 
-                    }}
-                    <button type="button" class="register-btn btn btn-secondary btn-block" data-toggle="modal" data-target="#register-modal">Register</button>
+                    {{ wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
+                    <button type="button" class="register-btn btn btn-secondary btn-block">Register</button>
                 </div>
-                {% endif %}
+            {% endif %}
             </div>
         </div>
     </body>

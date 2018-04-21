@@ -30,7 +30,7 @@ def move(req):
 
     state = State.current()
     unit = state.units[unit_idx]
-    
+
     move_type = MoveType(req["type"])
 
     if move_type == MoveType.CHANGE_POS:

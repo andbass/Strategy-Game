@@ -49,7 +49,7 @@ def create_game():
 def register():
     register_form = form.RegisterForm()
     if not register_form.validate_on_submit():
-    		return jsnoify(errors=register_form.errors)
+        return jsonify(errors=register_form.errors)
 
     name = register_form.name.data
     email = register_form.email.data
@@ -58,8 +58,10 @@ def register():
     user = User.query.filter_by(email=email).first()
     if user is None:
     	user = User(email=email, name=name, password=password)
+
     	db.session.add(user)
     	db.session.commit()
+
     	login_user(user)
     	return fl.redirect(fl.url_for("index"))
 
