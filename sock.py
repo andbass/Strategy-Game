@@ -22,7 +22,7 @@ def join(req):
 
 @sio.on("connect")
 def connect():
-    print("WELCOME")
+    pass
 
 @sio.on("disconnect")
 def disconnect():
@@ -47,10 +47,10 @@ def move(req):
     move_type = MoveType(req["type"])
 
     if move_type == MoveType.CHANGE_POS:
-        unit.move_to(req["pos"])
+        unit.move_to(req["pos"], state)
     elif move_type == MoveType.ATTACK:
         target = state.units[req["target"]]
-        unit.attack(target)
+        unit.attack(target, state)
 
     State.update(state)
 

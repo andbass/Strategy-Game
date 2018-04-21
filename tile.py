@@ -21,6 +21,8 @@ class Types(enum.Enum):
     WALL = 4
     WATER = 5
 
+IMPASSABLE = -1
+
 def grass():
     return Tile(
         type = Types.GRASS,
@@ -51,13 +53,13 @@ def mountain():
 def wall():
     return Tile(
         type = Types.WALL,
-        cost = -1,
+        cost = IMPASSABLE,
     )
 
 def water():
     return Tile(
         type = Types.WATER,
-        cost = -1,
+        cost = IMPASSABLE,
     )
 
 tiles = {
