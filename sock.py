@@ -1,7 +1,8 @@
 
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 from state import State
+from auth import current_user
 from db import Game
 
 import enum
@@ -14,6 +15,18 @@ def base_info(req):
 class MoveType(enum.Enum):
     CHANGE_POS = 0
     ATTACK = 1
+
+@sio.on("join")
+def join(req):
+    pass
+
+@sio.on("connect")
+def connect():
+    print("WELCOME")
+
+@sio.on("disconnect")
+def disconnect():
+    pass
 
 @sio.on("move")
 def move(req):

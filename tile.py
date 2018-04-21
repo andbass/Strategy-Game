@@ -59,3 +59,10 @@ def water():
         type = Types.WATER,
         cost = -1,
     )
+
+tiles = {
+    Types.GRASS : grass(),
+    Types.FOREST : forest(),
+    Types.MOUNTAIN : mountain(),
+    Types.WATER: water(),
+}
