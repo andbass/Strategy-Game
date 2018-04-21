@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
-gunicorn = "*"
 flask-socketio = "*"
 flask-login = "*"
 flask-shell-ipython = "*"
@@ -15,9 +14,7 @@ flask-bcrypt = "*"
 attrs = "*"
 flask-wtf = "*"
 flask-bootstrap = "*"
-jedi = ">=0.9.0"
-json-rpc = ">=1.8.1"
-service-factory = ">=0.1.5"
+gevent = "*"
 
 [dev-packages]
 

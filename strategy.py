@@ -1,5 +1,7 @@
 
 import flask as fl
+import flask_socketio as socketio
+
 from flask import Flask, jsonify
 from flask_bootstrap import Bootstrap
 
@@ -95,3 +97,6 @@ def logout():
 def initdb():
     db.drop_all()
     db.create_all()
+
+if __name__ == "__main__":
+    sio.run(app, host=app.config.get("HOST"), port=app.config.get("PORT"))
