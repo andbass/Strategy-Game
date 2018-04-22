@@ -23,10 +23,24 @@ class Unit:
     moveable_tiles = attr.ib(default=attr.Factory(set))
 
     def move_to(self, pos, state):
-        pass
+        if self.has_moved:
+            return
+
+        if state.is_open(pos):
+            self.pos = pos
+            state.update_moveable_tiles()
+
+            self.has_moved = True
 
     def attack(self, target, state):
-        pass
+        if self.has_attacked:
+            return
+
+        
+
+    def reset(self, state):
+        self.has_moved = False
+        self.has_attacked = False
 
     def update_moveable_tiles(self, state):
         self.moveable_tiles.clear()

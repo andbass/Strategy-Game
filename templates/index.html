@@ -63,11 +63,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            {{ 
-                            wtf.quick_form(login_form, action="/login", button_map={ 
-                            "submit": "primary btn-block" 
-                            })  
-                            }}
+                            {{  wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
                             <button type="button" class="register-btn btn btn-secondary btn-block" data-dismiss="modal">Cancel</button>
                         </div>
                     {% endif %}
@@ -90,7 +86,12 @@
 
         <div class="jumbotron">
             <h1 class="display-4">Game Center</h1>
-            <p class="lead">Hop in a game and get wrecked!</p>
+
+            {% if current_user.is_authenticated %}
+                <p class="lead">Hello there {{ current_user.name }}, hop in a game!</p>
+            {% else %}
+                <p class="lead">Hop in a game and get wrecked!</p>
+            {% endif %}
         </div>
 
         <div class="main-panel container-fluid">
@@ -102,7 +103,7 @@
                     </div>
                     <div class="game-list">
                         {% for game in games %}
-                            <div class="game-listing card" data-id="{{ game.id }}">
+                            <div class="game-listing card">
                                 <div class="card-body">
                                     <h5 class="name card-title">{{ game.name }}</h5>
                                     <p class="map-name card-text">{{ game.map_name }}</p>
@@ -113,28 +114,28 @@
                                     {% endfor %}
                                 </ul>
                                 <div class="game-panel card-body">
-                                    <a href="#" class="card-link">Join</a>
+                                    <a href="{{ url_for("join", game_id=game.id) }}" class="card-link">Join</a>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
-                <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
-                    <canvas id="main-canvas" class="main-canvas">
-                </div>
-                {% if not current_user.is_authenticated %}
-                    <div class="account-panel col-sm-2">
-                        {% if bad_login %}
-                            <div class="alert alert-danger" role="alert">
-                                Invalid Credentials
-                            </div>
-                        {% endif %}
+            <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
+                <canvas id="main-canvas" class="main-canvas">
+            </div>
+            {% if not current_user.is_authenticated %}
+                <div class="account-panel col-sm-2">
+                    {% if bad_login %}
+                        <div class="alert alert-danger" role="alert">
+                            Invalid Credentials
+                        </div>
+                    {% endif %}
 
-                        <h5>Account</h5>
-                        {{ wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
-                        <button type="button" class="register-btn btn btn-secondary btn-block" data-toggle="modal" data-target="#register-modal">Register</button>
-                    </div>
-                {% endif %}
+                    <h5>Account</h5>
+                    {{ wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
+                    <button type="button" class="register-btn btn btn-secondary btn-block" data-toggle="modal" data-target="#register-modal">Register</button>
+                </div>
+            {% endif %}
             </div>
         </div>
     </body>

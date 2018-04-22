@@ -18,8 +18,6 @@ class State:
 
     @staticmethod
     def update(game_id, new_state):
-        new_state.update_moveable_tiles()
-
         game = Game.query.get(game_id)
         game.state = new_state
        
@@ -58,6 +56,10 @@ class State:
 
     def height(self):
         return len(self.tilemap)
+
+    def next_turn(self):
+        for unit in self.units:
+            unit.reset(self)
 
     def in_bounds(self, coord):
         if coord[1] < 0 or coord[1] >= self.height():

@@ -1,6 +1,6 @@
 
+import click
 import flask as fl
-import flask_socketio as socketio
 
 from flask import Flask, jsonify
 from flask_bootstrap import Bootstrap
@@ -17,10 +17,10 @@ app.config.from_envvar("STRATEGY_CFG")
 
 Bootstrap(app)
 
-from sock import sio
+from sock import sio, join_room, leave_room
 sio.init_app(app)
 
-from db import db, User, Game
+from db import db, User, Game, UserGames
 db.init_app(app)
 
 from auth import bcrypt, login_manager, login_user, login_required, logout_user
@@ -69,7 +69,6 @@ def register():
 
     return pages.index(bad_login=True)
 
-
 @app.route("/login", methods=["POST"])
 def login():
     login_form = form.LoginForm()
@@ -87,6 +86,21 @@ def login():
     login_user(user)
     return fl.redirect(fl.url_for("index"))
 
+@app.route("/join/<game_id>", methods=["GET"])
+@login_required
+def join(game_id):
+    game = Game.query.get(game_id)
+    if game is None:
+        # TODO tell user if game was deleted?
+        return fl.redirect(fl.url_for("index"))
+
+    connection = UserGames(game_id=game_id, user_id=current_user.id)
+
+    db.session.add(connection)
+    db.session.commit()
+
+    return fl.redirect(fl.url_for("index"))
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -100,3 +114,4 @@ def initdb():
 
 if __name__ == "__main__":
     sio.run(app, host=app.config.get("HOST"), port=app.config.get("PORT"))
+

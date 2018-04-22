@@ -16,10 +16,6 @@ class MoveType(enum.Enum):
     CHANGE_POS = 0
     ATTACK = 1
 
-@sio.on("join")
-def join(req):
-    pass
-
 @sio.on("connect")
 def connect():
     pass
