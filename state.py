@@ -49,7 +49,7 @@ class State:
         return state
 
     def __attrs_post_init__(self):
-        self.update_moveable_tiles()
+        self.update_units()
 
     def width(self):
         return len(self.tilemap[0])
@@ -103,9 +103,10 @@ class State:
 
         return None
 
-    def update_moveable_tiles(self):
+    def update_units(self):
         for unit in self.units:
             unit.update_moveable_tiles(self)
+            unit.update_attackable_tiles(self)
 
     def json(self):
         jmap_width = len(self.tilemap[0])
@@ -165,8 +166,8 @@ class State:
                 if cur_unit is None:
                     continue
 
-                row_str = (row_str[:x] + 
-                           unit_glyphs[cur_unit.team][cur_unit.type] + 
+                row_str = (row_str[:x] +
+                           unit_glyphs[cur_unit.team][cur_unit.type] +
                            row_str[x + 1:])
 
             cur_pos[0] = 0
@@ -200,5 +201,3 @@ class State:
             cur_pos[1] += 1
 
             print(row_str)
-
-         

@@ -4,6 +4,8 @@ import enum
 
 import vec
 
+from attack import Attack
+
 @attr.s
 class Unit:
     type = attr.ib()
@@ -11,8 +13,7 @@ class Unit:
 
     max_hp = attr.ib(default=10)
     moves = attr.ib(default=4)
-    strength = attr.ib(default=4)
-    range = attr.ib(default=1)
+    attack = attr.ib(default = Attack())
 
     hp = attr.ib(default=attr.Factory(lambda self: self.max_hp, takes_self=True))
 
@@ -30,13 +31,27 @@ class Unit:
 
         if state.is_open(pos):
             self.pos = pos
+
             state.update_moveable_tiles()
+            state.update_attackable_tiles()
 
             self.has_moved = True
 
-    def attack(self, target, state):
+    def attack(self, target_idx, target, state):
         if self.has_attacked:
             return
+
+        if target.pos in self.attackable_tiles:
+            target.damage(self.action.damage)
+
+            if target.hp == 0:
+                del state.units[target_idx]
+
+            self.has_attacked = True
+
+    def damage(amount):
+        self.hp -= amount
+        self.hp = max(self.hp, 0)
 
     def reset(self, state):
         self.has_moved = False
@@ -64,8 +79,10 @@ class Unit:
 
         flood_fill(self.pos, self.moves)
 
-    def update_range(self, state):
-        self.attackable_tiles = set(tuple(pos) for pos in self.action.range(self, state))
+    def update_attackable_tiles(self, state):
+        self.attackable_tiles = set(tuple(pos)
+                                    for pos in self.action.range(self, state)
+                                    if state.is_passable(pos))
 
     def can_move_to(self, pos):
         return tuple(pos) in self.moveable_tiles
