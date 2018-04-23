@@ -20,7 +20,7 @@ class State:
     def update(game_id, new_state):
         game = Game.query.get(game_id)
         game.state = new_state
-       
+
         db.session.commit()
 
     @staticmethod
@@ -75,6 +75,13 @@ class State:
             return False
 
         if self.get_unit(coord) != None:
+            return False
+
+        cur_tile = self.get_tile(coord)
+        return cur_tile.cost != tile.IMPASSABLE
+
+    def is_passable(self, coord):
+        if not self.in_bounds(coord):
             return False
 
         cur_tile = self.get_tile(coord)

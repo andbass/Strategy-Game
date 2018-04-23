@@ -12,10 +12,10 @@ class LoginForm(FlaskForm):
     submit = wtf.SubmitField('Login')
 
 class RegisterForm(FlaskForm):
-		name = wtf.TextField('Name',validators=[valid.DataRequired()])
-		email = EmailField('Email', validators=[valid.DataRequired(), valid.Email()])
-		password = wtf.PasswordField('Password', validators=[valid.DataRequired()])
-		submit = wtf.SubmitField('Register')
+    name = wtf.TextField('Name',validators=[valid.DataRequired()])
+    email = EmailField('Email', validators=[valid.DataRequired(), valid.Email()])
+    password = wtf.PasswordField('Password', validators=[valid.DataRequired()])
+    submit = wtf.SubmitField('Register')
 
 class GameCreateForm(FlaskForm):
     name = wtf.TextField('Name', validators=[valid.DataRequired()])

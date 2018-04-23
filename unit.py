@@ -20,7 +20,9 @@ class Unit:
     has_attacked = attr.ib(default=False)
 
     pos = attr.ib(default=attr.Factory(lambda: [0, 0]))
+
     moveable_tiles = attr.ib(default=attr.Factory(set))
+    attackable_tiles = attr.ib(default=attr.Factory(set))
 
     def move_to(self, pos, state):
         if self.has_moved:
@@ -35,8 +37,6 @@ class Unit:
     def attack(self, target, state):
         if self.has_attacked:
             return
-
-        
 
     def reset(self, state):
         self.has_moved = False
@@ -61,8 +61,11 @@ class Unit:
             add(vec.left(pos), moves)
             add(vec.right(pos), moves)
             add(vec.down(pos), moves)
-            
+
         flood_fill(self.pos, self.moves)
+
+    def update_range(self, state):
+        self.attackable_tiles = set(pos for pos in self.action.range(self, state))
 
     def can_move_to(self, pos):
         return tuple(pos) in self.moveable_tiles

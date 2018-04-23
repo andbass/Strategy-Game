@@ -94,7 +94,11 @@ def join(game_id):
         # TODO tell user if game was deleted?
         return fl.redirect(fl.url_for("index"))
 
-    connection = UserGames(game_id=game_id, user_id=current_user.id)
+    connection = UserGames(game_id=game_id, 
+                           user_id=current_user.id,
+                           team=game.num_players)
+
+    game.num_players += 1
 
     db.session.add(connection)
     db.session.commit()
