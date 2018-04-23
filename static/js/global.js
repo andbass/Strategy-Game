@@ -17,3 +17,5 @@ var MoveTypes = {
     CHANGE_POS: 0,
     ATTACK: 1,
 }
+
+var TileSize = 32;
