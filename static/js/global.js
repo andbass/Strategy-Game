@@ -14,6 +14,6 @@ var TileTypes = {
 }
 
 var MoveTypes = {
-    change_pos : 0,
-    attack : 1,
+    change_pos: 0,
+    attack: 1,
 }
