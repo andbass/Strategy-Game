@@ -2,13 +2,14 @@
 $(document).ready(function() {
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on("connect", function() {
-        socket.emit("message", { data: "Dyaln is cool" })
+
     })
 
     socket.on("update", function(state) {
         // Update the canvas with new game state
-        // Redraw tilemap
-        // Redraw units
+        //      Redraw tilemap
+        //      Redraw units
+        //      Maybe get movable / attackble tile lists ready to go
     })
 
     $('#create-game-modal').on('hidden.bs.modal', function(){
