@@ -13,7 +13,7 @@ class Unit:
 
     max_hp = attr.ib(default=10)
     moves = attr.ib(default=4)
-    attack = attr.ib(default = Attack())
+    attack = attr.ib(default=attr.Factory(Attack))
 
     hp = attr.ib(default=attr.Factory(lambda self: self.max_hp, takes_self=True))
 
@@ -37,7 +37,7 @@ class Unit:
 
             self.has_moved = True
 
-    def attack(self, target_idx, target, state):
+    def attack_unit(self, target_idx, target, state):
         if self.has_attacked:
             return
 
@@ -81,7 +81,7 @@ class Unit:
 
     def update_attackable_tiles(self, state):
         self.attackable_tiles = set(tuple(pos)
-                                    for pos in self.action.range(self, state)
+                                    for pos in self.attack.range(self, state)
                                     if state.is_passable(pos))
 
     def can_move_to(self, pos):
@@ -93,8 +93,7 @@ class Unit:
             team = self.team.value,
 
             max_hp = self.max_hp,
-            range = self.range,
-            strength = self.strength,
+            damage = self.attack.damage,
             moves = self.moves,
 
             hp = self.hp,
@@ -103,7 +102,9 @@ class Unit:
             has_attacked = self.has_attacked,
 
             pos = self.pos,
-            moveable_tiles = list(moveable_tiles),
+
+            moveable_tiles = list(list(pos) for pos in self.moveable_tiles),
+            attackable_tiles = list(list(pos) for pos in self.attackable_tiles),
         )
 
 class Types(enum.Enum):

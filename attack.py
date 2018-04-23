@@ -16,14 +16,11 @@ class Attack:
     """ Base level damage of attack """
     damage = attr.ib(default=3)
 
-    @staticmethod
-    def soldier():
-        return Attack()
+def soldier():
+    return Attack()
 
-    @staticmethod
-    def archer():
-        return Attack(
-            range=range_func.projectile,
-            damage=5,
-        )
-
+def archer():
+    return Attack(
+        range=range_func.projectile,
+        damage=5,
+    )

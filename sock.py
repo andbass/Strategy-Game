@@ -46,7 +46,7 @@ def move(req):
         unit.move_to(req["pos"], state)
     elif move_type == MoveType.ATTACK:
         target = state.units[req["target"]]
-        unit.attack(target_idx, target, state)
+        unit.attack_unit(target_idx, target, state)
 
     State.update(state)
 
