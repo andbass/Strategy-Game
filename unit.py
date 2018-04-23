@@ -4,7 +4,7 @@ import enum
 
 import vec
 
-from attack import Attack
+import attack
 
 @attr.s
 class Unit:
@@ -13,7 +13,7 @@ class Unit:
 
     max_hp = attr.ib(default=10)
     moves = attr.ib(default=4)
-    attack = attr.ib(default=attr.Factory(Attack))
+    attack = attr.ib(default=attr.Factory(attack.Attack))
 
     hp = attr.ib(default=attr.Factory(lambda self: self.max_hp, takes_self=True))
 
@@ -128,7 +128,7 @@ def archer(team, pos):
         type = Types.ARCHER,
         team = team,
 
-        range = 3,
+        attack = attack.archer(),
 
         pos = pos,
     )

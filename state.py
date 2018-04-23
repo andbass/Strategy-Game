@@ -43,7 +43,13 @@ class State:
             [g, g, g, g, g, g, f, m, g, g],
         ]
 
-        units = [unit.soldier(unit.Team.RED, [1, 0]), unit.soldier(unit.Team.BLUE, [3, 0])]
+        units = [
+            unit.soldier(unit.Team.RED, [1, 0]),
+            unit.soldier(unit.Team.BLUE, [3, 0]),
+
+            unit.archer(unit.Team.RED, [0, 7]),
+            unit.archer(unit.Team.BLUE, [1, 7]),
+        ]
         state = State(tilemap, units)
 
         return state
