@@ -1,4 +1,10 @@
 
+import math
+
+"""
+Basic operations
+"""
+
 def plus(coord1, coord2):
     return [coord1[0] + coord2[0], coord1[1] + coord2[1]]
 
@@ -10,6 +16,16 @@ def scale(coord, factor):
 
 def neg(coord):
     return [-coord[0], -coord[1]]
+
+def dot(coord1, coord2):
+    return coord1[0] * coord2[0] + coord1[1] * coord2[1]
+
+def dist(coord1, coord2):
+    return math.sqrt(dot(coord1, coord2))
+
+"""
+Utility functions to get directions
+"""
 
 def up(coord, amount=1):
     return [coord[0], coord[1] - amount]

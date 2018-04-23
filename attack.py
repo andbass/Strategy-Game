@@ -27,8 +27,10 @@ class Attack:
             damage=5,
         )
 
+"""
+Collection of functions usable by `Actions`
+"""
 
-# Collection of functions usable by `Actions`
 def range_adjacent(unit, state):
     return [
         pos
@@ -42,4 +44,23 @@ def range_adjacent(unit, state):
     ]
 
 def range_projectile(unit, state, deadzone=1, range=2):
-    pass
+    attackable_tiles = set()
+
+    def can_add(pos):
+        if pos in attackable_tiles:
+            return False
+
+        return deadzone < vec.dist(pos, unit.pos) <= range
+
+    def add(pos):
+        if can_add(pos, moves):
+            attackable_tiles.add(tuple(pos))
+            flood_fill(pos)
+
+    def flood_fill(pos):
+        add(vec.up(pos))
+        add(vec.left(pos))
+        add(vec.right(pos))
+        add(vec.down(pos))
+
+    return flood_fill(unit.pos)

@@ -65,7 +65,7 @@ class Unit:
         flood_fill(self.pos, self.moves)
 
     def update_range(self, state):
-        self.attackable_tiles = set(pos for pos in self.action.range(self, state))
+        self.attackable_tiles = set(tuple(pos) for pos in self.action.range(self, state))
 
     def can_move_to(self, pos):
         return tuple(pos) in self.moveable_tiles
