@@ -12,6 +12,10 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=False, nullable=False)
 
+    def get_game(self):
+        usergame = UserGames.query.filter_by(user_id=self.id).one()
+        return Game.query.get(usergame.game_id)
+
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 

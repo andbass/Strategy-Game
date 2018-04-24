@@ -23,7 +23,7 @@ sio.init_app(app)
 from db import db, User, Game, UserGames
 db.init_app(app)
 
-from auth import bcrypt, login_manager, login_user, login_required, logout_user
+from auth import bcrypt, login_manager, login_user, login_required, logout_user, current_user
 bcrypt.init_app(app)
 login_manager.init_app(app)
 
@@ -59,13 +59,13 @@ def register():
 
     user = User.query.filter_by(email=email).first()
     if user is None:
-    	user = User(email=email, name=name, password=password)
+        user = User(email=email, name=name, password=password)
 
-    	db.session.add(user)
-    	db.session.commit()
+        db.session.add(user)
+        db.session.commit()
 
-    	login_user(user)
-    	return fl.redirect(fl.url_for("index"))
+        login_user(user)
+        return fl.redirect(fl.url_for("index"))
 
     return pages.index(bad_login=True)
 
@@ -73,7 +73,7 @@ def register():
 def login():
     login_form = form.LoginForm()
     if not login_form.validate_on_submit():
-      	return jsonify(errors=login_form.errors)
+        return jsonify(errors=login_form.errors)
 
     email = login_form.email.data
     password = login_form.password.data
@@ -94,7 +94,12 @@ def join(game_id):
         # TODO tell user if game was deleted?
         return fl.redirect(fl.url_for("index"))
 
-    connection = UserGames(game_id=game_id, 
+    # TODO ensure user isnt in other games
+    usergames = UserGames.query.filter_by(user_id=current_user.id, game_id=game_id)
+    if usergames.count() > 0:
+        return fl.redirect(fl.url_for("index"))
+
+    connection = UserGames(game_id=game_id,
                            user_id=current_user.id,
                            team=game.num_players)
 

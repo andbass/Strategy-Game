@@ -37,7 +37,9 @@ class Unit:
 
             self.has_moved = True
 
-    def attack_unit(self, target_idx, target, state):
+    def attack_unit(self, target_idx, state):
+        target = state.units[target_idx]
+
         if self.has_attacked:
             return
 

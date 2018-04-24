@@ -18,7 +18,13 @@ class MoveType(enum.Enum):
 
 @sio.on("connect")
 def connect():
-    pass
+    if not current_user.is_authenticated:
+        return dict(message="login")
+
+    game = current_user.get_game()
+    state = game.state
+
+    sio.emit("update", game.state.json())
 
 @sio.on("disconnect")
 def disconnect():
@@ -45,8 +51,8 @@ def move(req):
     if move_type == MoveType.CHANGE_POS:
         unit.move_to(req["pos"], state)
     elif move_type == MoveType.ATTACK:
-        target = state.units[req["target"]]
-        unit.attack_unit(target_idx, target, state)
+        target_idx = req["target"]
+        unit.attack_unit(target_idx, state)
 
     State.update(state)
 

@@ -1,4 +1,9 @@
 
+var Teams = {
+    RED: 0,
+    BLUE: 1,
+};
+
 var UnitTypes = {
     SOLDIER: 0,
     ARCHER: 1,
@@ -19,3 +24,34 @@ var MoveTypes = {
 }
 
 var TileSize = 32;
+
+var TileColors = {
+    [TileTypes.GRASS]: "#0f0",
+    [TileTypes.DIRT]: "#000",
+    [TileTypes.FOREST]: "#050",
+    [TileTypes.MOUNTAIN]: "#cc0",
+    [TileTypes.WATER]: "#00f",
+};
+
+// Will be set by `loadImages`
+var UnitImages = {
+    [UnitTypes.SOLDIER]: {
+        DONE: null,
+        CAN_BOTH: null,
+        CAN_MOVE: null,
+        CAN_ATTACK: null,
+    },
+
+    [UnitTypes.ARCHER]: {
+        DONE: null,
+        CAN_BOTH: null,
+        CAN_MOVE: null,
+        CAN_ATTACK: null,
+    }
+}
+
+var TeamColors = {
+    [Teams.RED]: [255, 0, 0],
+    [Teams.BLUE]: [0, 0, 255],
+
+}

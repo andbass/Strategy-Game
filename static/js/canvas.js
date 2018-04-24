@@ -1,15 +1,27 @@
-canvasInit = function() {
-    canvas = document.getElementById('main-canvas');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
 
-    // canvas.addEventListener('mousemove', function(evt) {
+canvasInit = function(state) {
+    canvas = $('#main-canvas').get(0);
+
+    var width = state.width * TileSize;
+    var height = state.height * TileSize;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+
     canvas.addEventListener('click', function(evt) {
         getMousePos(evt);
     }, false);
 
     ctx = canvas.getContext("2d");
-    requestAnimationFrame(drawState);
+
+    ctx.lineWidth = 3;
+
+    requestAnimationFrame(function() {
+        drawState(state);
+    });
 }
 
 window.onresize = function(event) {
@@ -19,13 +31,56 @@ window.onresize = function(event) {
     requestAnimationFrame(drawState);
 }
 
-function drawState() {
+function mapCoordToCanvas(coord) {
+    return [coord[0] * TileSize, coord[1] * TileSize];
+}
+
+function drawState(state) {
     if (ctx == null) {
         return;
     }
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawTiles(state);
+    drawUnits(state);
+}
+
+function drawTiles(state) {
+    for (var x = 0; x < state.width; x++) {
+        for (var y = 0; y < state.height; y++) {
+            coord = mapCoordToCanvas([x, y]);
+            tile = state.map[y][x];
+
+            ctx.fillStyle = TileColors[tile];
+            ctx.fillRect(coord[0], coord[1], TileSize, TileSize);
+
+            ctx.strokeStyle = "#000";
+            ctx.strokeRect(coord[0], coord[1], TileSize, TileSize);
+        }
+    }
+}
+
+function drawUnits(state) {
+    state.units.forEach(function(unit) {
+        var images = UnitImages[unit.type];
+        var image = images.CAN_BOTH;
+
+        if (unit.hasMoved && unit.hasAttacked) {
+            image = images.DONE;
+        } else if (unit.hasMoved) {
+            image = images.CAN_ATTACK;
+        } else if (unit.hasAttacked) {
+            image = images.CAN_MOVE;
+        }
+
+        image = filterImage(image, TeamColors[unit.team]);
+        image.onload = function() {
+            var coord = mapCoordToCanvas(unit.pos);
+            ctx.drawImage(image, coord[0], coord[1], TileSize, TileSize);
+        };
+    });
 }
 
 function getMousePos(evt) {
@@ -37,26 +92,37 @@ function getMousePos(evt) {
 
 function loadImages(complete) {
     var images = [
-        "/static/sprites/soldier.png",
-        "/static/sprites/soldier_canBoth.png",
-        "/static/sprites/soldier_canAttack.png",
-        "/static/sprites/soldier_canMove.png"
+        {
+            type: "DONE",
+            src: "/static/sprites/soldier.png",
+        }, {
+            type: "CAN_BOTH",
+            src: "/static/sprites/soldier_canBoth.png",
+        }, {
+            type: "CAN_ATTACK",
+            src: "/static/sprites/soldier_canAttack.png",
+        }, {
+            type: "CAN_MOVE",
+            src: "/static/sprites/soldier_canMove.png",
+        }
     ];
 
     var imagesLoaded = 0;
-    for (var i = 0; i < images.length; i++) {
+    images.forEach(function(imageInfo) {
         var image = new Image();
-        image.src = images[i];
+        image.src = imageInfo.src;
 
         image.onload = function() {
             imagesLoaded++;
 
+            UnitImages[UnitTypes.SOLDIER][imageInfo.type] = image;
+            UnitImages[UnitTypes.ARCHER][imageInfo.type] = image;
+
             if (imagesLoaded == images.length) { // finished loading, can do stuff ;)
-                canvasInit();
                 complete();
             }
         }
-    }
+    });
 }
 
 function filterImage(image, color) {
