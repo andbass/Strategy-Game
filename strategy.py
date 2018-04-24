@@ -94,16 +94,18 @@ def join(game_id):
         # TODO tell user if game was deleted?
         return fl.redirect(fl.url_for("index"))
 
+    if game.num_players == 2:
+        # TODO tell user if game was full?
+        return fl.redirect(fl.url_for("index"))
+
     # TODO ensure user isnt in other games
-    usergames = UserGames.query.filter_by(user_id=current_user.id, game_id=game_id)
+    usergames = UserGames.query.filter_by(user_id=current_user.id)
     if usergames.count() > 0:
         return fl.redirect(fl.url_for("index"))
 
     connection = UserGames(game_id=game_id,
                            user_id=current_user.id,
-                           team=game.num_players)
-
-    game.num_players += 1
+                           team=game.num_players())
 
     db.session.add(connection)
     db.session.commit()

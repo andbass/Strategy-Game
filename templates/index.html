@@ -123,6 +123,15 @@
                     </div>
                 </div>
             <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
+                {% if current_user.is_authenticated and current_user.get_game() %}
+                    <h1>
+                        {% if current_user.is_active() %}
+                            Make your move!
+                        {% else %}
+                            Please wait for other player...
+                        {% endif %}
+                    </h1>
+                {% endif %}
                 <canvas id="main-canvas" class="main-canvas">
             </div>
             {% if not current_user.is_authenticated %}

@@ -13,8 +13,21 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120), unique=False, nullable=False)
 
     def get_game(self):
-        usergame = UserGames.query.filter_by(user_id=self.id).one()
+        usergame = UserGames.query.filter_by(user_id=self.id).first()
+        if usergame is None:
+            return None
+
         return Game.query.get(usergame.game_id)
+
+    def get_team(self):
+        usergame = UserGames.query.filter_by(user_id=self.id).one()
+        return usergame.team
+
+    def is_active(self):
+        team = self.get_team()
+        game = self.get_game()
+
+        return game.active_team == team
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,7 +38,8 @@ class Game(db.Model):
     state = db.Column(db.PickleType(protocol=3), nullable=False)
     active_team = db.Column(db.Integer, nullable=False, default=0)
 
-    num_players = db.Column(db.Integer, nullable=False, default=0)
+    def num_players(self):
+        return UserGames.query.filter_by(game_id=self.id).count()
 
 class UserGames(db.Model):
     id = db.Column(db.Integer, primary_key=True)

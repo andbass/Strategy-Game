@@ -6,13 +6,18 @@ $(document).ready(function() {
 
     loadImages(function() {
         var socket = io.connect('http://' + document.domain + ':' + location.port);
-        socket.on("connect", function() {
 
-        });
+        socket.on("init", function(state) {
+            PlayerTeam = state.player_team;
+            ActiveTeam = state.active_team;
 
-        socket.on("update", function(state) {
             console.log(state);
             canvasInit(state);
+        });
+
+        socket.on("update", function(activeTeam, state) {
+            ActiveTeam = activeTeam;
+
         });
     });
 });

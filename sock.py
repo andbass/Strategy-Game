@@ -9,9 +9,6 @@ import enum
 
 sio = SocketIO()
 
-def base_info(req):
-    return req["game_id"]
-
 class MoveType(enum.Enum):
     CHANGE_POS = 0
     ATTACK = 1
@@ -22,9 +19,20 @@ def connect():
         return dict(message="login")
 
     game = current_user.get_game()
+    if game is None:
+        return
+
     state = game.state
 
-    sio.emit("update", game.state.json())
+    join_room(game.id)
+
+    json = game.state.json()
+    json.update(dict(
+        player_team=current_user.get_team(),
+        active_team=game.active_team,
+    ))
+
+    sio.emit("init", json)
 
 @sio.on("disconnect")
 def disconnect():
@@ -35,8 +43,10 @@ def move(req):
     if not current_user.is_authenticated:
         return dict(message="login")
 
-    game_id = base_info(req)
-    game = Game.query.get(game_id)
+    if not current_user.is_active():
+        return dict(message="wait")
+
+    game = current_user.get_game()
 
     if game.current_player != current_user:
         return dict(message="not-turn")
@@ -55,6 +65,13 @@ def move(req):
         unit.attack_unit(target_idx, state)
 
     State.update(state)
+
+    json = game.state.json()
+    json.update(dict(
+        active_team=game.active_team,
+    ))
+
+    sio.emit("update", json, room=game.id)
 
 @sio.on("end-turn")
 def end_turn(req):

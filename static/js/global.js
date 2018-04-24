@@ -1,4 +1,7 @@
 
+var ActiveTeam;
+var PlayerTeam;
+
 var Teams = {
     RED: 0,
     BLUE: 1,
