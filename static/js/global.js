@@ -2,6 +2,13 @@
 var ActiveTeam;
 var PlayerTeam;
 
+var Modes = {
+    NORMAL: 0,
+    MOVING: 1,
+    ATTACKING: 2,
+}
+var Mode = Modes.NORMAL;
+
 var Teams = {
     RED: 0,
     BLUE: 1,

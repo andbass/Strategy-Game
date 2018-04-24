@@ -31,7 +31,7 @@ $(document).ready(function() {
         socket.on("update", function(activeTeam, state) {
             ActiveTeam = activeTeam;
 
-            drawState(state);
+            canvasUpdate(state);
             hudUpdate(state);
         });
     });

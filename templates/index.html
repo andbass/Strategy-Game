@@ -166,6 +166,12 @@
                                 <p>{{ current_user.get_game().map_name }}</p>
                             </div>
                             <div class="game-info">
+                                <h3>On Team</h3>
+                                <p>
+                                    {% if current_user.get_team() == 0 %} Red {% else %} Blue {% endif %}
+                                </p>
+                            </div>
+                            <div class="game-info">
                                 <button type="button" class="leave-btn btn btn-danger btn-block">Quit YOU PUSSY</button>
                             </div>
                         {% endif %}

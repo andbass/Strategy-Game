@@ -1,4 +1,6 @@
 
+var canvas;
+
 function canvasInit(state) {
     canvas = $('#main-canvas').get(0);
 
@@ -11,20 +13,25 @@ function canvasInit(state) {
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
 
-    canvas.addEventListener('click', function(evt) {
-        evt.preventDefault();
-        var mousePos = getMousePos(evt);
-
-        $(this).contextMenu({
-            x: evt.pageX,
-            y: evt.pageY,
-        });
-    }, false);
+    $(canvas).click(function(evt) {
+        handleClick(evt, state, this);
+    });
 
     ctx = canvas.getContext("2d");
 
     ctx.lineWidth = 3;
     ctx.font = StatsFontSize + "px monospace";
+
+    requestAnimationFrame(function() {
+        drawState(state);
+    });
+}
+
+function canvasUpdate(state) {
+    $(canvas).off()
+    $(canvas).click(function(evt) {
+        handleClick(evt, state, this);
+    });
 
     requestAnimationFrame(function() {
         drawState(state);
@@ -41,8 +48,39 @@ function getMousePos(evt) {
     return [mouseX, mouseY];
 }
 
+function getUnit(state, pos) {
+    return state.units.find(function(unit) {
+        return unit.pos[0] == pos[0] && unit.pos[1] == pos[1];
+    });
+}
+
 function mapCoordToCanvas(coord) {
     return [coord[0] * TileSize, coord[1] * TileSize];
+}
+
+function canvasCoordToMap(coord) {
+    return [
+        Math.floor(coord[0] / TileSize), 
+        Math.floor(coord[1] / TileSize)
+    ];
+}
+
+function handleClick(evt, state, canvas) {
+    evt.preventDefault();
+    if (ActiveTeam !== PlayerTeam) {
+        return;
+    }
+
+    var mousePos = getMousePos(evt);
+    var mapPos = canvasCoordToMap(mousePos);
+
+    var unit = getUnit(state, mapPos);
+    if (unit !== undefined && unit.team == PlayerTeam && !unit.has_moved) {
+        $(canvas).contextMenu({
+            x: evt.pageX,
+            y: evt.pageY,
+        });
+    }
 }
 
 function drawState(state) {
