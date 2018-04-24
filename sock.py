@@ -2,7 +2,7 @@
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 from state import State
-from auth import current_user
+from auth import current_user, active_only, auth_only
 from db import Game
 
 import enum
@@ -14,10 +14,8 @@ class MoveType(enum.Enum):
     ATTACK = 1
 
 @sio.on("connect")
+@auth_only
 def connect():
-    if not current_user.is_authenticated:
-        return dict(message="login")
-
     game = current_user.get_game()
     if game is None:
         return
@@ -39,17 +37,9 @@ def disconnect():
     pass
 
 @sio.on("move")
+@active_only
 def move(req):
-    if not current_user.is_authenticated:
-        return dict(message="login")
-
-    if not current_user.is_active():
-        return dict(message="wait")
-
     game = current_user.get_game()
-
-    if game.current_player != current_user:
-        return dict(message="not-turn")
 
     unit_idx = req["unit"]
 
@@ -74,5 +64,8 @@ def move(req):
     sio.emit("update", json, room=game.id)
 
 @sio.on("end-turn")
+@active_only
 def end_turn(req):
-    pass
+    game = current_user.get_game()
+
+
