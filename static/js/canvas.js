@@ -18,6 +18,7 @@ canvasInit = function(state) {
     ctx = canvas.getContext("2d");
 
     ctx.lineWidth = 3;
+    ctx.font = StatsFontSize + "px monospace";
 
     requestAnimationFrame(function() {
         drawState(state);
@@ -45,6 +46,7 @@ function drawState(state) {
 
     drawTiles(state);
     drawUnits(state);
+    drawStats(state);
 }
 
 function drawTiles(state) {
@@ -79,8 +81,23 @@ function drawUnits(state) {
         image.onload = function() {
             var coord = mapCoordToCanvas(unit.pos);
             ctx.drawImage(image, coord[0], coord[1], TileSize, TileSize);
+
+            if (unit.hp == unit.max_hp) return;
+
+            var bottomRight = [coord[0] + TileSize, coord[1] + TileSize];
+            var textPos = [bottomRight[0] - StatsFontSize, bottomRight[1] - StatsFontSize];
+
+            ctx.fillStyle = "#000";
+            ctx.fillRect(textPos[0], textPos[1], StatsFontSize, StatsFontSize);
+
+            ctx.fillStyle = "#fff";
+            ctx.fillText(unit.hp, textPos[0], textPos[1] + StatsFontSize - 2);
         };
     });
+}
+
+function drawStats(state) {
+
 }
 
 function getMousePos(evt) {

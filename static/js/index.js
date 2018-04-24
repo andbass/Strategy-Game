@@ -13,11 +13,26 @@ $(document).ready(function() {
 
             console.log(state);
             canvasInit(state);
+
+            $.contextMenu({
+                selector: "#main-canvas",
+                trigger: "left",
+                items: {
+                    move: {
+                        name: "Move",
+                        callback: function(key, opt) {
+                            console.log(opt);
+                        }
+                    }
+                },
+            })
         });
 
         socket.on("update", function(activeTeam, state) {
             ActiveTeam = activeTeam;
 
+            drawState(state);
+            hudUpdate(state);
         });
     });
 });

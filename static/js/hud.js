@@ -1,2 +1,4 @@
 
+function hudUpdate(state) {
 
+}

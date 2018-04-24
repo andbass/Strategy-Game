@@ -26,6 +26,7 @@ var MoveTypes = {
     ATTACK: 1,
 }
 
+var StatsFontSize = 12;
 var TileSize = 32;
 
 var TileColors = {

@@ -10,6 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <link rel="stylesheet" href="/static/css/context-menu.css">
         <link rel="stylesheet" href="/static/css/style.css">
 
         <script src="/static/js/jquery.js"></script>
@@ -17,9 +18,12 @@
 
         <script src="/static/js/socket.io.js"></script>
 
+        <script src="/static/js/context-menu.min.js"></script>
+
         <script src="/static/js/global.js"></script>
         <script src="/static/js/index.js"></script>
         <script src="/static/js/action.js"></script>
+        <script src="/static/js/hud.js"></script>
         <script src="/static/js/canvas.js"></script>
     </head>
     <body>
@@ -124,7 +128,7 @@
                 </div>
             <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
                 {% if current_user.is_authenticated and current_user.get_game() %}
-                    <h1>
+                    <h1 class="turn-header">
                         {% if current_user.is_active() %}
                             Make your move!
                         {% else %}
