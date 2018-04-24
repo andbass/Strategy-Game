@@ -13,7 +13,6 @@ def index(login_form=None, game_form=None, bad_login=False, register_form=None):
     else:
         games = Game.query.all()
 
-    print(games[0].players()[0])
     games = [game for game in games
              if not game.is_full()]
 
