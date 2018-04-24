@@ -1,5 +1,5 @@
 
-canvasInit = function(state) {
+function canvasInit(state) {
     canvas = $('#main-canvas').get(0);
 
     var width = state.width * TileSize;
@@ -12,7 +12,13 @@ canvasInit = function(state) {
     canvas.style.height = height + "px";
 
     canvas.addEventListener('click', function(evt) {
-        getMousePos(evt);
+        evt.preventDefault();
+        var mousePos = getMousePos(evt);
+
+        $(this).contextMenu({
+            x: evt.pageX,
+            y: evt.pageY,
+        });
     }, false);
 
     ctx = canvas.getContext("2d");
@@ -23,6 +29,16 @@ canvasInit = function(state) {
     requestAnimationFrame(function() {
         drawState(state);
     });
+}
+
+function getMousePos(evt) {
+    var rect = canvas.getBoundingClientRect();
+
+    // no longer translating to map coordinate here to handle popup menus 
+    var mouseX = evt.clientX - rect.left;
+    var mouseY = evt.clientY - rect.top;
+
+    return [mouseX, mouseY];
 }
 
 function mapCoordToCanvas(coord) {
@@ -88,12 +104,6 @@ function drawUnits(state) {
     });
 }
 
-function getMousePos(evt) {
-    var rect = canvas.getBoundingClientRect();
-    // no longer translating to map coordinate here to handle popup menus 
-    mouseX = evt.clientX - rect.left;
-    mouseY = evt.clientY - rect.top;
-}
 
 function loadImages(complete) {
     var images = [

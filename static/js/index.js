@@ -16,7 +16,7 @@ $(document).ready(function() {
 
             $.contextMenu({
                 selector: "#main-canvas",
-                trigger: "left",
+                trigger: "none",
                 items: {
                     move: {
                         name: "Move",
