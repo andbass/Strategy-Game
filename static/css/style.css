@@ -53,3 +53,16 @@ html, body {
 canvas {
     display: inline-block;
 }
+
+.game-header {
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.game-info {
+    padding-bottom: 1.5rem 0;
+}
+
+.game-info p {
+    font-size: 1.15em;
+}

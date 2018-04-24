@@ -136,7 +136,12 @@
                             {% endif %}
                         </h1>
                     {% endif %}
-                    <canvas id="main-canvas" class="main-canvas">
+                    <canvas id="main-canvas" class="main-canvas"></canvas>
+                    <div class="game-panel-footer">
+                        {% if current_user.is_authenticated and current_user.get_game() %}
+                            <button type="button" class="btn btn-primary btn-large">End Turn</button>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="account-panel col-sm-2">
                     {% if not current_user.is_authenticated %}
@@ -150,7 +155,17 @@
                         {{ wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
                         <button type="button" class="register-btn btn btn-secondary btn-block" data-toggle="modal" data-target="#register-modal">Register</button>
                     {% else %}
-                        <h1>PLAY BITCH</h1>
+                        {% if current_user.get_game() %}
+                            <h2 class="game-header">PLAY BITCH</h2>
+                            <div class="game-info">
+                                <h3>Current Game</h3>
+                                <p>{{ current_user.get_game().name }}</p>
+                            </div>
+                            <div class="game-info">
+                                <h3>Current Map</h3>
+                                <p>{{ current_user.get_game().map_name }}</p>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
