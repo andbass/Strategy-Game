@@ -9,6 +9,8 @@ var Modes = {
 }
 var Mode = Modes.NORMAL;
 
+var SelectedUnit = null;
+
 var Teams = {
     RED: 0,
     BLUE: 1,
@@ -64,5 +66,4 @@ var UnitImages = {
 var TeamColors = {
     [Teams.RED]: [255, 0, 0],
     [Teams.BLUE]: [0, 0, 255],
-
 }

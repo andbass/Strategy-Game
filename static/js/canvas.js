@@ -1,5 +1,6 @@
 
 var canvas;
+var ctx;
 
 function canvasInit(state) {
     canvas = $('#main-canvas').get(0);
@@ -76,11 +77,16 @@ function handleClick(evt, state, canvas) {
 
     var unit = getUnit(state, mapPos);
     if (unit !== undefined && unit.team == PlayerTeam && !unit.has_moved) {
-        $(canvas).contextMenu({
-            x: evt.pageX,
-            y: evt.pageY,
-        });
+        Mode = Modes.MOVING;
+        SelectedUnit = unit;
+    } else {
+        Mode = Modes.NORMAL;
+        SelectedUnit = null;
     }
+
+    requestAnimationFrame(function() {
+        drawState(state);
+    });
 }
 
 function drawState(state) {
@@ -93,6 +99,8 @@ function drawState(state) {
 
     drawTiles(state);
     drawUnits(state);
+
+    drawHud(state);
 }
 
 function drawTiles(state) {
