@@ -25,7 +25,7 @@ $(document).ready(function() {
                         }
                     }
                 },
-            })
+            });
         });
 
         socket.on("update", function(activeTeam, state) {

@@ -25,13 +25,6 @@ canvasInit = function(state) {
     });
 }
 
-window.onresize = function(event) {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    requestAnimationFrame(drawState);
-}
-
 function mapCoordToCanvas(coord) {
     return [coord[0] * TileSize, coord[1] * TileSize];
 }
@@ -46,7 +39,6 @@ function drawState(state) {
 
     drawTiles(state);
     drawUnits(state);
-    drawStats(state);
 }
 
 function drawTiles(state) {
@@ -94,10 +86,6 @@ function drawUnits(state) {
             ctx.fillText(unit.hp, textPos[0], textPos[1] + StatsFontSize - 2);
         };
     });
-}
-
-function drawStats(state) {
-
 }
 
 function getMousePos(evt) {

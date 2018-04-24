@@ -126,31 +126,33 @@
                         {% endfor %}
                     </div>
                 </div>
-            <div class="canvas-panel {% if current_user.is_authenticated %} col-sm-10 {% else %} col-sm-8 {% endif %}">
-                {% if current_user.is_authenticated and current_user.get_game() %}
-                    <h1 class="turn-header">
-                        {% if current_user.is_active() %}
-                            Make your move!
-                        {% else %}
-                            Please wait for other player...
-                        {% endif %}
-                    </h1>
-                {% endif %}
-                <canvas id="main-canvas" class="main-canvas">
-            </div>
-            {% if not current_user.is_authenticated %}
-                <div class="account-panel col-sm-2">
-                    {% if bad_login %}
-                        <div class="alert alert-danger" role="alert">
-                            Invalid Credentials
-                        </div>
+                <div class="canvas-panel col-sm-8">
+                    {% if current_user.is_authenticated and current_user.get_game() %}
+                        <h1 class="turn-header">
+                            {% if current_user.is_active() %}
+                                Make your move!
+                            {% else %}
+                                Please wait for other player...
+                            {% endif %}
+                        </h1>
                     {% endif %}
-
-                    <h5>Account</h5>
-                    {{ wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
-                    <button type="button" class="register-btn btn btn-secondary btn-block" data-toggle="modal" data-target="#register-modal">Register</button>
+                    <canvas id="main-canvas" class="main-canvas">
                 </div>
-            {% endif %}
+                <div class="account-panel col-sm-2">
+                    {% if not current_user.is_authenticated %}
+                        {% if bad_login %}
+                            <div class="alert alert-danger" role="alert">
+                                Invalid Credentials
+                            </div>
+                        {% endif %}
+
+                        <h5>Account</h5>
+                        {{ wtf.quick_form(login_form, action="/login", button_map={ "submit": "primary btn-block" }) }}
+                        <button type="button" class="register-btn btn btn-secondary btn-block" data-toggle="modal" data-target="#register-modal">Register</button>
+                    {% else %}
+                        <h1>PLAY BITCH</h1>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </body>
