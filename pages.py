@@ -3,11 +3,23 @@ import flask as fl
 import form
 
 from db import db, Game
+from auth import current_user
 
 def index(login_form=None, game_form=None, bad_login=False, register_form=None):
+    current_game = current_user.is_authenticated and current_user.get_game()
+
+    if current_game:
+        games = Game.query.filter(Game.id != current_game.id).all()
+    else:
+        games = Game.query.all()
+
+    print(games[0].players()[0])
+    games = [game for game in games
+             if not game.is_full()]
+
     return fl.render_template("index.html",
-                              game_form=game_form or form.GameCreateForm(), 
+                              game_form=game_form or form.GameCreateForm(),
                               login_form=login_form or form.LoginForm(),
                               register_form=register_form or form.RegisterForm(),
-                              bad_login=bad_login, 
-                              games=Game.query.all())
+                              bad_login=bad_login,
+                              games=games)

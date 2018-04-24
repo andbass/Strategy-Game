@@ -115,7 +115,7 @@
                                     <p class="map-name card-text">{{ game.map_name }}</p>
                                 </div>
                                 <ul class="player-list list-group list-group-flush">
-                                    {% for player in game.players %}
+                                    {% for player in game.players() %}
                                         <li class="list-group-item">{{ player.name }}</li>
                                     {% endfor %}
                                 </ul>

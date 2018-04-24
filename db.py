@@ -41,6 +41,15 @@ class Game(db.Model):
     def num_players(self):
         return UserGames.query.filter_by(game_id=self.id).count()
 
+    def players(self):
+        return User.query \
+            .join(UserGames) \
+            .filter(UserGames.game_id == self.id) \
+            .all()
+
+    def is_full(self):
+        return self.num_players() >= 2
+
 class UserGames(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
