@@ -77,21 +77,24 @@ function handleClick(evt, state, canvas) {
 
     var unit = getUnit(state, mapPos);
     if (Mode == Modes.MOVING) {
-        var tile = SelectedUnit.moveable_tiles.find(function(tile) {
-            return vecEq(tile, mapPos);
-        });
-
-        if (tile !== undefined) {
-            moveSelectedUnitTo(state, tile);
+        var performedAction = handleMoveAction(state, mapPos);
+        if (!performedAction) {
+            handleAttackAction(state, mapPos);
         }
 
         Mode = Modes.NORMAL;
+    } else if (Mode == Modes.ATTACKING) {
+        handleAttackAction(state, mapPos);
+        Mode = Modes.NORMAL;
     } else if (Mode == Modes.NORMAL) {
-        if (unit !== undefined && unit.team == PlayerTeam && !unit.has_moved) {
-            console.log(unit);
-
-            Mode = Modes.MOVING;
-            SelectedUnit = unit;
+        if (unit !== undefined && unit.team == PlayerTeam) {
+            if (!unit.has_moved) {
+                Mode = Modes.MOVING;
+                SelectedUnit = unit;
+            } else if (!unit.has_attacked) {
+                Mode = Modes.ATTACKING;
+                SelectedUnit = unit;
+            }
         } else {
             Mode = Modes.NORMAL;
             SelectedUnit = null;
@@ -162,6 +165,23 @@ function drawUnits(state) {
             ctx.fillText(unit.hp, textPos[0], textPos[1] + StatsFontSize - 2);
         };
     });
+
+    // Draw indicator of mode for unit
+    if (Mode !== Modes.NORMAL) {
+        var pos = SelectedUnit.pos;
+        var coords = mapCoordToCanvas(pos);
+
+        if (Mode === Modes.MOVING) {
+            ctx.fillStyle = "#0ff";
+        } else if (Mode === Modes.ATTACKING) {
+            ctx.fillStyle = "#f00";
+        }
+
+        ctx.globalAlpha = 0.7;
+        ctx.fillRect(coords[0], coords[1], TileSize, TileSize);
+    }
+
+    ctx.globalAlpha = 1.0;
 }
 
 

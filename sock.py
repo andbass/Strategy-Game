@@ -53,7 +53,7 @@ def move(req):
         success = unit.move_to(req["pos"], state)
     elif move_type == MoveType.ATTACK:
         target_idx = req["target"]
-        unit.attack_unit(target_idx, state)
+        success = unit.attack_unit(target_idx, state)
 
     game.update(state)
 

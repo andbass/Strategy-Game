@@ -17,19 +17,6 @@ $(document).ready(function() {
 
             console.log(state);
             canvasInit(state);
-
-            $.contextMenu({
-                selector: "#main-canvas",
-                trigger: "none",
-                items: {
-                    move: {
-                        name: "Move",
-                        callback: function(key, opt) {
-                            console.log(opt);
-                        }
-                    }
-                },
-            });
         });
 
         Sio.on("update", function(state) {
@@ -44,8 +31,6 @@ $(document).ready(function() {
     
             ActiveTeam = state.active_team;
 
-            console.log(ActiveTeam);
-            console.log(PlayerTeam);
             if (ActiveTeam === PlayerTeam) {
                 $(".turn-header").text("Make your move!");
             } else {

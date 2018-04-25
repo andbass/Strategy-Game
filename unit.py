@@ -29,7 +29,7 @@ class Unit:
         if self.has_moved:
             return False
 
-        if state.is_open(pos):
+        if state.is_open(pos) and tuple(pos) in self.moveable_tiles:
             self.pos = pos
             self.has_moved = True
 
@@ -42,17 +42,20 @@ class Unit:
         target = state.units[target_idx]
 
         if self.has_attacked:
-            return
+            return False
 
-        if target.pos in self.attackable_tiles:
-            target.damage(self.action.damage)
+        if tuple(target.pos) in self.attackable_tiles:
+            target.damage(self.attack.damage)
 
             if target.hp == 0:
                 del state.units[target_idx]
 
             self.has_attacked = True
+            return True
 
-    def damage(amount):
+        return False
+
+    def damage(self, amount):
         self.hp -= amount
         self.hp = max(self.hp, 0)
 
