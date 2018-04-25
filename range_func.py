@@ -28,7 +28,7 @@ def projectile(unit, state, deadzone=1, range=2):
             return
 
         seen_tiles.add(tuple(pos))
-        if not state.is_passable(pos) or vec.dist(pos, unit.pos) > range:
+        if not state.in_bounds(pos) or vec.dist(pos, unit.pos) > range:
             return
 
         if can_add(pos):

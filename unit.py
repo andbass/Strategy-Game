@@ -87,8 +87,7 @@ class Unit:
 
     def update_attackable_tiles(self, state):
         self.attackable_tiles = set(tuple(pos)
-                                    for pos in self.attack.range(self, state)
-                                    if state.is_passable(pos))
+                                    for pos in self.attack.range(self, state))
 
     def can_move_to(self, pos):
         return tuple(pos) in self.moveable_tiles
