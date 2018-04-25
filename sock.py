@@ -37,7 +37,7 @@ def disconnect():
     pass
 
 @sio.on("leave")
-@active_only
+@auth_only
 def leave():
     game = current_user.get_game()
     UserGames.query \
