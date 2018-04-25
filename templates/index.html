@@ -105,7 +105,7 @@
                 <div class="game-panel col-sm-2">
                     <div class="controls">
                         <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#create-game-modal">Create Game</button>
-                        <button class="refresh-btn btn btn-secondary btn-block">Refresh</button>
+                        <a class="refresh-btn btn btn-secondary btn-block" href="{{ url_for("index") }}">Refresh</a>
                     </div>
                     <div class="game-list">
                         {% for game in games %}
