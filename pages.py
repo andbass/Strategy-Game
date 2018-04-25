@@ -5,6 +5,8 @@ import form
 from db import db, Game
 from auth import current_user
 
+from sample_states import collection
+
 def index(login_form=None, game_form=None, bad_login=False, register_form=None):
     current_game = current_user.is_authenticated and current_user.get_game()
 
