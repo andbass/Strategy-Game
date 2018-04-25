@@ -49,7 +49,9 @@ $(document).ready(function() {
         });
 
         $(".leave-btn").click(function(evt) {
-            Sio.emit("leave");
+            if (confirm("Are you sure?")) {
+                Sio.emit("leave");
+            }
         });
     });
 });

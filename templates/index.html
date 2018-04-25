@@ -138,9 +138,7 @@
                     {% endif %}
                     <canvas id="main-canvas" class="main-canvas"></canvas>
                     <div class="game-panel-footer">
-                        {% if current_user.is_authenticated and current_user.get_game() %}
-                            <button type="button" class="end-turn-btn btn btn-primary btn-large">End Turn</button>
-                        {% endif %}
+
                     </div>
                 </div>
                 <div class="account-panel col-sm-2">
@@ -172,7 +170,8 @@
                                 </p>
                             </div>
                             <div class="game-info">
-                                <button class="leave-btn btn btn-danger btn-block">Quit</button>
+                                <button type="button" class="end-turn-btn btn btn-primary btn-large">End Turn</button>
+                                <button class="leave-btn btn btn-danger">Quit</button>
                             </div>
                         {% endif %}
                     {% endif %}
