@@ -17,11 +17,10 @@ def scale(coord, factor):
 def neg(coord):
     return [-coord[0], -coord[1]]
 
-def dot(coord1, coord2):
-    return coord1[0] * coord2[0] + coord1[1] * coord2[1]
-
 def dist(coord1, coord2):
-    return math.sqrt(dot(coord1, coord2))
+    x_dist = coord1[0] - coord2[0]
+    y_dist = coord1[1] - coord2[1]
+    return math.sqrt(x_dist ** 2 + y_dist ** 2)
 
 """
 Utility functions to get directions

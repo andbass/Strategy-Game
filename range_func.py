@@ -15,6 +15,7 @@ def adjacent(unit, state):
 
 def projectile(unit, state, deadzone=1, range=2):
     attackable_tiles = set()
+    seen_tiles = set()
 
     def can_add(pos):
         if tuple(pos) in attackable_tiles:
@@ -23,7 +24,11 @@ def projectile(unit, state, deadzone=1, range=2):
         return deadzone < vec.dist(pos, unit.pos)
 
     def add(pos):
-        if not state.is_open(pos) or vec.dist(pos, unit.pos) > range:
+        if tuple(pos) in seen_tiles:
+            return
+
+        seen_tiles.add(tuple(pos))
+        if not state.is_passable(pos) or vec.dist(pos, unit.pos) > range:
             return
 
         if can_add(pos):
