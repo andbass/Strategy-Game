@@ -17,13 +17,6 @@ class State:
         return game.state
 
     @staticmethod
-    def update(game_id, new_state):
-        game = Game.query.get(game_id)
-        game.state = new_state
-
-        db.session.commit()
-
-    @staticmethod
     def sample():
         g = tile.Types.GRASS
         w = tile.Types.WATER
@@ -131,79 +124,3 @@ class State:
             map = jmap,
             units = junits,
         )
-
-    def dump(self, moveable_tiles_for=None):
-        tile_glyphs = {
-            tile.Types.GRASS : '.',
-            tile.Types.DIRT : '=',
-            tile.Types.FOREST : '%',
-            tile.Types.MOUNTAIN : '^',
-            tile.Types.WATER : '~',
-            tile.Types.WALL : '#',
-        }
-
-        unit_glyphs = {
-            unit.Team.BLUE : {
-                unit.Types.SOLDIER : 'X',
-                unit.Types.ARCHER : 'x',
-            },
-
-            unit.Team.RED : {
-                unit.Types.SOLDIER : 'O',
-                unit.Types.ARCHER : 'o',
-            },
-        }
-
-        print("MAP:")
-
-        for row in self.tilemap:
-            row_str = "".join([tile_glyphs[elem] for elem in row])
-            print(row_str)
-
-        print("\nWITH UNITS")
-
-        cur_pos = [0, 0]
-        for row in self.tilemap:
-            row_str = "".join([tile_glyphs[elem] for elem in row])
-            for x in range(self.width()):
-                cur_pos[0] = x
-                cur_unit = self.get_unit(cur_pos)
-
-                if cur_unit is None:
-                    continue
-
-                row_str = (row_str[:x] +
-                           unit_glyphs[cur_unit.team][cur_unit.type] +
-                           row_str[x + 1:])
-
-            cur_pos[0] = 0
-            cur_pos[1] += 1
-
-            print(row_str)
-
-        if moveable_tiles_for is None:
-            return
-
-        target = moveable_tiles_for
-        print("\nMOVABLE TILES FROM {}".format(target.pos))
-
-        cur_pos = [0, 0]
-
-        for row in self.tilemap:
-            row_str = "".join([tile_glyphs[elem] for elem in row])
-            for x in range(self.width()):
-                cur_pos[0] = x
-                cur_unit = self.get_unit(cur_pos)
-
-                if cur_unit is not None:
-                    row_str = (row_str[:x] + 
-                               unit_glyphs[cur_unit.team][cur_unit.type] + 
-                               row_str[x + 1:])
-
-                if target.can_move_to(cur_pos):
-                    row_str = (row_str[:x] + "M" + row_str[x + 1:])
-
-            cur_pos[0] = 0
-            cur_pos[1] += 1
-
-            print(row_str)

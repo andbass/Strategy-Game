@@ -20,12 +20,16 @@ def projectile(unit, state, deadzone=1, range=2):
         if tuple(pos) in attackable_tiles:
             return False
 
-        return deadzone < vec.dist(pos, unit.pos) <= range
+        return deadzone < vec.dist(pos, unit.pos)
 
     def add(pos):
+        if not state.is_open(pos) or vec.dist(pos, unit.pos) > range:
+            return
+
         if can_add(pos):
             attackable_tiles.add(tuple(pos))
-            flood_fill(pos)
+
+        flood_fill(pos)
 
     def flood_fill(pos):
         add(vec.up(pos))

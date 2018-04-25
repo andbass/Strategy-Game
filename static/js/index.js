@@ -1,13 +1,17 @@
 
+function vecEq(coord1, coord2) {
+    return coord1[0] == coord2[0] && coord1[1] == coord2[1];
+}
+
 $(document).ready(function() {
     $('#create-game-modal').on('hidden.bs.modal', function(){
         $(this).find('form')[0].reset();
     });
 
     loadImages(function() {
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        Sio = io.connect('http://' + document.domain + ':' + location.port);
 
-        socket.on("init", function(state) {
+        Sio.on("init", function(state) {
             PlayerTeam = state.player_team;
             ActiveTeam = state.active_team;
 
@@ -28,11 +32,31 @@ $(document).ready(function() {
             });
         });
 
-        socket.on("update", function(activeTeam, state) {
-            ActiveTeam = activeTeam;
+        Sio.on("update", function(state) {
+            Mode = Modes.NORMAL;
+
+            console.log("UPDATE:");
+            console.log(state);
+
+            if (state.success === false) {
+                alert("DIDNT WORK BOYO");
+            }
+    
+            ActiveTeam = state.active_team;
+
+            console.log(ActiveTeam);
+            console.log(PlayerTeam);
+            if (ActiveTeam === PlayerTeam) {
+                $(".turn-header").text("Make your move!");
+            } else {
+                $(".turn-header").text("Please wait for other player...");
+            }
 
             canvasUpdate(state);
-            hudUpdate(state);
+        });
+
+        $(".end-turn-btn").click(function(evt) {
+            Sio.emit("end-turn");
         });
     });
 });

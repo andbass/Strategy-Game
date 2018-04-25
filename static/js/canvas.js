@@ -29,7 +29,7 @@ function canvasInit(state) {
 }
 
 function canvasUpdate(state) {
-    $(canvas).off()
+    $(canvas).off("click");
     $(canvas).click(function(evt) {
         handleClick(evt, state, this);
     });
@@ -76,12 +76,26 @@ function handleClick(evt, state, canvas) {
     var mapPos = canvasCoordToMap(mousePos);
 
     var unit = getUnit(state, mapPos);
-    if (unit !== undefined && unit.team == PlayerTeam && !unit.has_moved) {
-        Mode = Modes.MOVING;
-        SelectedUnit = unit;
-    } else {
+    if (Mode == Modes.MOVING) {
+        var tile = SelectedUnit.moveable_tiles.find(function(tile) {
+            return vecEq(tile, mapPos);
+        });
+
+        if (tile !== undefined) {
+            moveSelectedUnitTo(state, tile);
+        }
+
         Mode = Modes.NORMAL;
-        SelectedUnit = null;
+    } else if (Mode == Modes.NORMAL) {
+        if (unit !== undefined && unit.team == PlayerTeam && !unit.has_moved) {
+            console.log(unit);
+
+            Mode = Modes.MOVING;
+            SelectedUnit = unit;
+        } else {
+            Mode = Modes.NORMAL;
+            SelectedUnit = null;
+        }
     }
 
     requestAnimationFrame(function() {
@@ -123,11 +137,11 @@ function drawUnits(state) {
         var images = UnitImages[unit.type];
         var image = images.CAN_BOTH;
 
-        if (unit.hasMoved && unit.hasAttacked) {
+        if (unit.has_moved && unit.has_attacked) {
             image = images.DONE;
-        } else if (unit.hasMoved) {
+        } else if (unit.has_moved) {
             image = images.CAN_ATTACK;
-        } else if (unit.hasAttacked) {
+        } else if (unit.has_attacked) {
             image = images.CAN_MOVE;
         }
 

@@ -1,4 +1,6 @@
 
+from copy import copy
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
@@ -49,6 +51,17 @@ class Game(db.Model):
 
     def is_full(self):
         return self.num_players() >= 2
+
+    def get_state(self):
+        return copy(self.state)
+
+    def update(self, state):
+        # THIS SUCKS
+        self.state = 42
+        db.session.commit()
+
+        self.state = state
+        db.session.commit()
 
 class UserGames(db.Model):
     id = db.Column(db.Integer, primary_key=True)

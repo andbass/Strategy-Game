@@ -27,15 +27,16 @@ class Unit:
 
     def move_to(self, pos, state):
         if self.has_moved:
-            return
+            return False
 
         if state.is_open(pos):
             self.pos = pos
-
-            state.update_moveable_tiles()
-            state.update_attackable_tiles()
-
             self.has_moved = True
+
+            state.update_units()
+            return True
+
+        return False
 
     def attack_unit(self, target_idx, state):
         target = state.units[target_idx]

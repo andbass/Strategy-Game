@@ -1,4 +1,6 @@
 
+var Sio;
+
 var ActiveTeam;
 var PlayerTeam;
 
