@@ -40,8 +40,16 @@ $(document).ready(function() {
             canvasUpdate(state);
         });
 
+        Sio.on("destroy", function() {
+            location.reload();
+        });
+
         $(".end-turn-btn").click(function(evt) {
             Sio.emit("end-turn");
+        });
+
+        $(".leave-btn").click(function(evt) {
+            Sio.emit("leave");
         });
     });
 });

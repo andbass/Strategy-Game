@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 from state import State
 from auth import current_user, active_only, auth_only
-from db import db, Game
+from db import db, Game, User, UserGames
 
 import enum
 
@@ -35,6 +35,19 @@ def connect():
 @sio.on("disconnect")
 def disconnect():
     pass
+
+@sio.on("leave")
+@active_only
+def leave():
+    game = current_user.get_game()
+    UserGames.query \
+        .filter_by(game_id=game.id) \
+        .delete()
+
+    db.session.delete(game)
+    db.session.commit()
+
+    emit("destroy", room=game.id)
 
 @sio.on("move")
 @active_only
