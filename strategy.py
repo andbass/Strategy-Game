@@ -13,6 +13,7 @@ import form
 import pages
 
 from state import State
+from sample_states import collection
 
 app = Flask(__name__)
 app.config.from_envvar("STRATEGY_CFG")
@@ -42,7 +43,9 @@ def create_game():
     name = game_form.name.data
     map_name = game_form.map_name.data
 
-    game = Game(name=name, map_name=map_name, state=State.sample())
+    game = Game(name=name,
+                map_name=map_name,
+                state=collection.get(map_name, State.sample()))
 
     db.session.add(game)
     db.session.commit()

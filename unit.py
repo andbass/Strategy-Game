@@ -45,7 +45,12 @@ class Unit:
             return False
 
         if tuple(target.pos) in self.attackable_tiles:
-            target.damage(self.attack.damage)
+            tile = state.get_tile(target.pos)
+
+            damage_amount = self.attack.damage
+            damage_amount /= tile.defense_bonus
+
+            target.damage(damage_amount)
 
             if target.hp == 0:
                 del state.units[target_idx]
@@ -56,7 +61,7 @@ class Unit:
         return False
 
     def damage(self, amount):
-        self.hp -= amount
+        self.hp -= int(amount)
         self.hp = max(self.hp, 0)
 
     def reset(self, state):

@@ -14,6 +14,16 @@ def adjacent(unit, state):
     ]
 
 def projectile(unit, state, deadzone=1, range=2):
+    # Apply range bonus
+    tile = state.get_tile(unit.pos)
+
+    range += tile.range_bonus
+    range = int(range)
+
+    # Affect deadzone a bit
+    deadzone += tile.range_bonus * 0.5
+    deadzone = int(deadzone)
+
     attackable_tiles = set()
     seen_tiles = set()
 

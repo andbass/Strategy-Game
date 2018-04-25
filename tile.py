@@ -38,7 +38,7 @@ def forest():
         cost = 2,
 
         range_bonus = 0,
-        defense_bonus = 3,
+        defense_bonus = 1.35,
     )
 
 def mountain():
@@ -47,7 +47,7 @@ def mountain():
         cost = 4,
 
         range_bonus = 2,
-        defense_bonus = 2,
+        defense_bonus = 1.5,
     )
 
 def wall():
