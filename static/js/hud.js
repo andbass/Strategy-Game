@@ -65,24 +65,29 @@ function drawMoveableTiles(unit, state) {
 }
 
 function drawAttackableTiles(unit, state) {
-    ctx.strokeStyle = "#f00";
-
     unit.attackable_tiles.forEach(function(tile) {
         var coord = mapCoordToCanvas(tile);
         var target = getUnit(state, tile);
 
         if (target !== undefined && target.team != PlayerTeam) {
-            ctx.beginPath();            
-            ctx.arc(
-                coord[0] + TileSize / 2, 
-                coord[1] + TileSize / 2, 
-                TileSize / 2, 
-                0, 2 * Math.PI);
-
-            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+            ctx.strokeStyle = "#f00";
+        } else {
+            ctx.globalAlpha = 0.5;
+            ctx.strokeStyle = "#c00";
         }
+
+        ctx.beginPath();            
+        ctx.arc(
+            coord[0] + TileSize / 2, 
+            coord[1] + TileSize / 2, 
+            TileSize / 2, 
+            0, 2 * Math.PI);
+
+        ctx.stroke();
     });
 
+    ctx.globalAlpha = 1.0;
     ctx.strokeStyle = "#000";
 }
 
