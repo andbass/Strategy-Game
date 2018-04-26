@@ -201,6 +201,22 @@ function loadImages(complete) {
             src: "/static/sprites/soldier_canMove.png",
         }
     ];
+    /*
+    {
+            type: "DONE",
+            src: "/static/sprites/archer.png",
+        }, {
+            type: "CAN_BOTH",
+            src: "/static/sprites/archer_canBoth.png",
+        }, {
+            type: "CAN_ATTACK",
+            src: "/static/sprites/archer_canAttack.png",
+        }, {
+            type: "CAN_MOVE",
+            src: "/static/sprites/archer_canMove.png",
+        }
+    ];
+    */
 
     var imagesLoaded = 0;
     images.forEach(function(imageInfo) {
@@ -209,9 +225,8 @@ function loadImages(complete) {
 
         image.onload = function() {
             imagesLoaded++;
-
-            UnitImages[UnitTypes.SOLDIER][imageInfo.type] = image;
-            UnitImages[UnitTypes.ARCHER][imageInfo.type] = image;
+                UnitImages[UnitTypes.SOLDIER][imageInfo.type] = image;
+                UnitImages[UnitTypes.ARCHER][imageInfo.type] = image;
 
             if (imagesLoaded == images.length) { // finished loading, can do stuff ;)
                 complete();
