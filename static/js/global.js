@@ -50,19 +50,36 @@ var TileColors = {
 
 // Will be set by `loadImages`
 var UnitImages = {
-    [UnitTypes.SOLDIER]: {
-        DONE: null,
-        CAN_BOTH: null,
-        CAN_MOVE: null,
-        CAN_ATTACK: null,
-    },
+    [Teams.RED]: {
+        [UnitTypes.SOLDIER]: {
+            DONE: null,
+            CAN_BOTH: null,
+            CAN_MOVE: null,
+            CAN_ATTACK: null,
+        },
 
-    [UnitTypes.ARCHER]: {
-        DONE: null,
-        CAN_BOTH: null,
-        CAN_MOVE: null,
-        CAN_ATTACK: null,
-    }
+        [UnitTypes.ARCHER]: {
+            DONE: null,
+            CAN_BOTH: null,
+            CAN_MOVE: null,
+            CAN_ATTACK: null,
+        },
+    },
+    [Teams.BLUE]: {
+        [UnitTypes.SOLDIER]: {
+            DONE: null,
+            CAN_BOTH: null,
+            CAN_MOVE: null,
+            CAN_ATTACK: null,
+        },
+
+        [UnitTypes.ARCHER]: {
+            DONE: null,
+            CAN_BOTH: null,
+            CAN_MOVE: null,
+            CAN_ATTACK: null,
+        },
+    },
 }
 
 var TeamColors = {

@@ -111,7 +111,6 @@ function drawState(state) {
         return;
     }
 
-    drawUnits(state);
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     drawTiles(state);
@@ -133,38 +132,6 @@ function drawTiles(state) {
             ctx.strokeRect(coord[0], coord[1], TileSize, TileSize);
         }
     }
-}
-
-function drawUnits(state) {
-    state.units.forEach(function(unit) {
-        var images = UnitImages[unit.type];
-        var image = images.CAN_BOTH;
-
-        if (unit.has_moved && unit.has_attacked) {
-            image = images.DONE;
-        } else if (unit.has_moved) {
-            image = images.CAN_ATTACK;
-        } else if (unit.has_attacked) {
-            image = images.CAN_MOVE;
-        }
-
-        image = filterImage(image, TeamColors[unit.team]);
-        image.onload = function() {
-            var coord = mapCoordToCanvas(unit.pos);
-            ctx.drawImage(image, coord[0], coord[1], TileSize, TileSize);
-
-            if (unit.hp == unit.max_hp) return;
-
-            var bottomRight = [coord[0] + TileSize, coord[1] + TileSize];
-            var textPos = [bottomRight[0] - StatsFontSize, bottomRight[1] - StatsFontSize];
-
-            ctx.fillStyle = "#000";
-            ctx.fillRect(textPos[0], textPos[1], StatsFontSize, StatsFontSize);
-
-            ctx.fillStyle = "#fff";
-            ctx.fillText(unit.hp, textPos[0], textPos[1] + StatsFontSize - 2);
-        };
-    });
 
     // Draw indicator of mode for unit
     if (Mode !== Modes.NORMAL) {
@@ -182,6 +149,35 @@ function drawUnits(state) {
     }
 
     ctx.globalAlpha = 1.0;
+}
+
+function drawUnits(state) {
+    state.units.forEach(function(unit) {
+        var images = UnitImages[unit.team][unit.type];
+        var image = images.CAN_BOTH;
+
+        if (unit.has_moved && unit.has_attacked) {
+            image = images.DONE;
+        } else if (unit.has_moved) {
+            image = images.CAN_ATTACK;
+        } else if (unit.has_attacked) {
+            image = images.CAN_MOVE;
+        }
+
+        var coord = mapCoordToCanvas(unit.pos);
+        ctx.drawImage(image, coord[0], coord[1], TileSize, TileSize);
+
+        if (unit.hp == unit.max_hp) return;
+
+        var bottomRight = [coord[0] + TileSize, coord[1] + TileSize];
+        var textPos = [bottomRight[0] - StatsFontSize, bottomRight[1] - StatsFontSize];
+
+        ctx.fillStyle = "#000";
+        ctx.fillRect(textPos[0], textPos[1], StatsFontSize, StatsFontSize);
+
+        ctx.fillStyle = "#fff";
+        ctx.fillText(unit.hp, textPos[0], textPos[1] + StatsFontSize - 2);
+    });
 }
 
 
@@ -228,11 +224,24 @@ function loadImages(complete) {
         image.src = imageInfo.src;
 
         image.onload = function() {
-            imagesLoaded++;
-            UnitImages[imageInfo.unit][imageInfo.type] = image;
+            var redImage = filterImage(image, TeamColors[Teams.RED]);
+            var blueImage = filterImage(image, TeamColors[Teams.BLUE]);
 
-            if (imagesLoaded == images.length) { // finished loading, can do stuff ;)
-                complete();
+            function onLoadTeamImage(team, image) {
+                imagesLoaded++;
+                UnitImages[team][imageInfo.unit][imageInfo.type] = image;
+
+                if (imagesLoaded == images.length * 2) { // need to load for each team
+                    complete();
+                }
+            }
+
+            redImage.onload = function() {
+                onLoadTeamImage(Teams.RED, redImage);
+            }
+
+            blueImage.onload = function() {
+                onLoadTeamImage(Teams.BLUE, blueImage);
             }
         }
     });
