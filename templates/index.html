@@ -107,8 +107,6 @@
                         <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#create-game-modal">Create Game</button>
                         <a class="refresh-btn btn btn-secondary btn-block" href="{{ url_for("index") }}">Refresh</a>
                     </div>
-                    {% if current_user.is_authenticated and current_user.get_game() %}
-                    {% else %}
                     <div class="game-list">
                         {% for game in games %}
                             <div class="game-listing card">
@@ -127,7 +125,6 @@
                             </div>
                         {% endfor %}
                     </div>
-                    {% endif %}
                 </div>
                 <div class="canvas-panel col-sm-8">
                     {% if current_user.is_authenticated and current_user.get_game() %}
