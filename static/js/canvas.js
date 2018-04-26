@@ -189,27 +189,35 @@ function loadImages(complete) {
     var images = [
         {
             type: "DONE",
+            unit: UnitTypes.SOLDIER,
             src: "/static/sprites/soldier.png",
         }, {
             type: "CAN_BOTH",
+            unit: UnitTypes.SOLDIER,
             src: "/static/sprites/soldier_canBoth.png",
         }, {
             type: "CAN_ATTACK",
+            unit: UnitTypes.SOLDIER,
             src: "/static/sprites/soldier_canAttack.png",
         }, {
             type: "CAN_MOVE",
+            unit: UnitTypes.SOLDIER,
             src: "/static/sprites/soldier_canMove.png",
         }, {
             type: "DONE",
+            unit: UnitTypes.ARCHER,
             src: "/static/sprites/archer.png",
         }, {
             type: "CAN_BOTH",
+            unit: UnitTypes.ARCHER,
             src: "/static/sprites/archer_canBoth.png",
         }, {
             type: "CAN_ATTACK",
+            unit: UnitTypes.ARCHER,
             src: "/static/sprites/archer_canAttack.png",
         }, {
             type: "CAN_MOVE",
+            unit: UnitTypes.ARCHER,
             src: "/static/sprites/archer_canMove.png",
         }
     ];
@@ -221,10 +229,7 @@ function loadImages(complete) {
 
         image.onload = function() {
             imagesLoaded++;
-            if (imagesLoaded < 4)
-                UnitImages[UnitTypes.SOLDIER][imageInfo.type] = image;
-            else
-                UnitImages[UnitTypes.ARCHER][imageInfo.type] = image;
+            UnitImages[imageInfo.unit][imageInfo.type] = image;
 
             if (imagesLoaded == images.length) { // finished loading, can do stuff ;)
                 complete();

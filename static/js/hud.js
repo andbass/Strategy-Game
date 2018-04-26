@@ -1,9 +1,7 @@
 
 function moveSelectedUnitTo(state, pos) {
     SelectedUnit.pos = pos;
-    requestAnimationFrame(function() {
-        drawState(state);
-    });
+    drawState(state);
 
     Sio.emit("move", {
         type: MoveTypes.CHANGE_POS,
