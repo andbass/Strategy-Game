@@ -72,7 +72,7 @@ def register():
         login_user(user)
         return fl.redirect(fl.url_for("index"))
 
-    return pages.index(bad_login=True)
+    return pages.index(bad_register=True)
 
 @app.route("/login", methods=["POST"])
 def login():

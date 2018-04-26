@@ -39,7 +39,7 @@ $(document).ready(function() {
                     if(window.Notification && Notification.permission !== "denied") {
                         Notification.requestPermission(function(status) {  // status is "granted", if accepted by user
                             var n = new Notification('Strategy', { 
-                            body: 'It\'s your turn!',
+                                body: 'It\'s your turn!',
                             }); 
                         });
                     }
