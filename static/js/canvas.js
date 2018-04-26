@@ -199,10 +199,7 @@ function loadImages(complete) {
         }, {
             type: "CAN_MOVE",
             src: "/static/sprites/soldier_canMove.png",
-        }
-    ];
-    /*
-    {
+        }, {
             type: "DONE",
             src: "/static/sprites/archer.png",
         }, {
@@ -216,7 +213,6 @@ function loadImages(complete) {
             src: "/static/sprites/archer_canMove.png",
         }
     ];
-    */
 
     var imagesLoaded = 0;
     images.forEach(function(imageInfo) {
@@ -225,7 +221,9 @@ function loadImages(complete) {
 
         image.onload = function() {
             imagesLoaded++;
+            if (imagesLoaded < 4)
                 UnitImages[UnitTypes.SOLDIER][imageInfo.type] = image;
+            else
                 UnitImages[UnitTypes.ARCHER][imageInfo.type] = image;
 
             if (imagesLoaded == images.length) { // finished loading, can do stuff ;)
