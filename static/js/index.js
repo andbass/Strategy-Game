@@ -1,4 +1,4 @@
-
+var turnEnd = 0;
 function vecEq(coord1, coord2) {
     return coord1[0] == coord2[0] && coord1[1] == coord2[1];
 }
@@ -33,7 +33,20 @@ $(document).ready(function() {
 
             if (ActiveTeam === PlayerTeam) {
                 $(".turn-header").text("Make your move!");
+                console.log(turnEnd);
+                if(turnEnd == 1) {
+                    console.log("Notification");
+                    if(window.Notification && Notification.permission !== "denied") {
+                        Notification.requestPermission(function(status) {  // status is "granted", if accepted by user
+                            var n = new Notification('Strategy', { 
+                            body: 'It\'s your turn!',
+                            }); 
+                        });
+                    }
+                    turnEnd = 0;
+                }   
             } else {
+                turnEnd = 1;
                 $(".turn-header").text("Please wait for other player...");
             }
 
@@ -46,6 +59,8 @@ $(document).ready(function() {
 
         $(".end-turn-btn").click(function(evt) {
             Sio.emit("end-turn");
+            turnEnd = 1;
+
         });
 
         $(".leave-btn").click(function(evt) {
